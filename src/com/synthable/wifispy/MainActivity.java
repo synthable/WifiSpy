@@ -8,6 +8,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
 import android.view.Menu;
+import android.view.MenuItem;
 
 public class MainActivity extends Activity {
 
@@ -29,21 +30,34 @@ public class MainActivity extends Activity {
 					finish();
 				}
 			}).show();
-		} else {
-			WifiSpyService.start(this);
 		}
 	}
 
 	@Override
 	protected void onDestroy() {
 		super.onDestroy();
-
-		WifiSpyService.stop(this);
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+	    switch (item.getItemId()) {
+	        case R.id.action_service_toggle:
+	        	if(WifiSpy.sServiceIsRunning) {
+	        		WifiSpyService.stop(this);
+	        		item.setTitle(getResources().getString(R.string.action_service_start));
+	        	} else {
+	        		WifiSpyService.start(this);
+	        		item.setTitle(getResources().getString(R.string.action_service_stop));
+	        	}
+	            return true;
+	        default:
+	            return super.onOptionsItemSelected(item);
+	    }
 	}
 }

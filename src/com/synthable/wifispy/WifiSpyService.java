@@ -18,12 +18,14 @@ public class WifiSpyService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		WifiSpy.sServiceIsRunning = true;
 		Log.v("SERVICE", "onCreate()");
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
+		WifiSpy.sServiceIsRunning = false;
 		Log.v("SERVICE", "onDestroy()");
 	}
 
