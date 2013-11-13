@@ -1,26 +1,41 @@
 package com.synthable.wifispy;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
-public class WifiSpyService extends Service {
+public class WifiSpyService extends Service implements
+	GooglePlayServicesClient.ConnectionCallbacks,
+	GooglePlayServicesClient.OnConnectionFailedListener,
+	LocationListener {
 
+    public static final int UPDATE_INTERVAL = 1000 * 5;
+    private static final int FASTEST_INTERVAL = 1000 * 1;
 	public static final String TAG = "WIFISPY_SERVICE";
 	public static boolean isRunning = false;
 
 	private WifiManager mWifiManager;
 	private WifiReceiver mWifiReceiver;
+
+    private LocationClient mLocationClient;
+    private LocationRequest mLocationRequest;
+    private Location mLocation;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -32,6 +47,15 @@ public class WifiSpyService extends Service {
 		super.onCreate();
 		isRunning = true;
 		Log.v("SERVICE", "onCreate()");
+
+		/** Setup GPS listening **/
+        mLocationRequest = LocationRequest.create();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+
+        mLocationClient = new LocationClient(this, this, this);
+        mLocationClient.connect();
 
 		/** Turn on Wifi if not already **/
 		mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -50,6 +74,12 @@ public class WifiSpyService extends Service {
 		super.onDestroy();
 		unregisterReceiver(mWifiReceiver);
 		isRunning = false;
+
+		if (mLocationClient.isConnected()) {
+			mLocationClient.removeLocationUpdates(this);
+        }
+        mLocationClient.disconnect();
+
 		Log.v("SERVICE", "onDestroy()");
 	}
 
@@ -79,4 +109,24 @@ public class WifiSpyService extends Service {
             }
         }
     }
+
+	@Override
+	public void onLocationChanged(Location location) {
+		mLocation = location;
+	}
+
+	@Override
+	public void onConnectionFailed(ConnectionResult result) {
+		
+	}
+
+	@Override
+	public void onConnected(Bundle connectionHint) {
+		mLocationClient.requestLocationUpdates(mLocationRequest, this);
+	}
+
+	@Override
+	public void onDisconnected() {
+		
+	}
 }
