@@ -7,6 +7,7 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.synthable.wifispy.provider.AccessPoint;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -100,9 +101,11 @@ public class WifiSpyService extends Service implements
 
 	class WifiReceiver extends BroadcastReceiver {
         public void onReceive(Context c, Intent intent) {
-            List<ScanResult> aps = mWifiManager.getScanResults();
-            for(int i = 0; i < aps.size(); i++) {
-                Log.v("SCANRESULT", aps.get(i).SSID);
+            List<ScanResult> results = mWifiManager.getScanResults();
+            for(ScanResult result : results) {
+            	AccessPoint ap = new AccessPoint(result);
+
+            	getContentResolver().insert(AccessPoints.URI, ap.toContentValues());
             }
         }
     }

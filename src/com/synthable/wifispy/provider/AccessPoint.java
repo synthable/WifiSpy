@@ -3,6 +3,8 @@ package com.synthable.wifispy.provider;
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
 
 import android.content.ContentValues;
+import android.database.Cursor;
+import android.net.wifi.ScanResult;
 
 public class AccessPoint {
 
@@ -14,6 +16,27 @@ public class AccessPoint {
 	private int strength;
 	private long lat;
 	private long lng;
+
+	public AccessPoint() {
+	}
+
+	public AccessPoint(ScanResult result) {
+		bssid = result.BSSID;
+    	ssid = result.SSID;
+    	capabilities = result.capabilities;
+    	frequency = result.frequency;
+    	strength = result.level;
+	}
+
+	public AccessPoint(Cursor cursor) {
+		bssid = cursor.getString(cursor.getColumnIndex(AccessPoints.Columns.BSSID));
+		ssid = cursor.getString(cursor.getColumnIndex(AccessPoints.Columns.SSID));
+		capabilities = cursor.getString(cursor.getColumnIndex(AccessPoints.Columns.CAPABILITIES));
+		frequency = cursor.getInt(cursor.getColumnIndex(AccessPoints.Columns.FREQUENCY));
+		strength = cursor.getInt(cursor.getColumnIndex(AccessPoints.Columns.STRENGHT));
+		lat = cursor.getLong(cursor.getColumnIndex(AccessPoints.Columns.LAT));
+		lng = cursor.getLong(cursor.getColumnIndex(AccessPoints.Columns.LNG));
+	}
 
 	public ContentValues toContentValues() {
 		ContentValues v = new ContentValues();
