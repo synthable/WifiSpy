@@ -1,5 +1,6 @@
 package com.synthable.wifispy;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -8,12 +9,14 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.synthable.wifispy.provider.AccessPoint;
+import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -36,6 +39,7 @@ public class WifiSpyService extends Service implements
     private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
+    private ArrayList<AccessPoint> mAccessPoints = new ArrayList<AccessPoint>();
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -66,6 +70,14 @@ public class WifiSpyService extends Service implements
         mWifiReceiver = new WifiReceiver();
         registerReceiver(mWifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         mWifiManager.startScan();
+
+        Cursor cursor = getContentResolver().query(AccessPoints.URI, null, null, null, null);
+        cursor.moveToFirst();
+        while(cursor.isBeforeFirst()) {
+        	AccessPoint ap = new AccessPoint(cursor);
+        	mAccessPoints.add(ap);
+        	cursor.moveToNext();
+        }
 	}
 
 	@Override
