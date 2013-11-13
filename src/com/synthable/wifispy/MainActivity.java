@@ -48,7 +48,7 @@ public class MainActivity extends Activity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 	    switch (item.getItemId()) {
 	        case R.id.action_service_toggle:
-	        	if(WifiSpy.sServiceIsRunning) {
+	        	if(WifiSpyService.isRunning) {
 	        		WifiSpyService.stop(this);
 	        		item.setTitle(getResources().getString(R.string.action_service_start));
 	        	} else {
@@ -59,5 +59,15 @@ public class MainActivity extends Activity {
 	        default:
 	            return super.onOptionsItemSelected(item);
 	    }
+	}
+
+	@Override
+	public boolean onPrepareOptionsMenu(Menu menu) {
+		if(WifiSpyService.isRunning) {
+			menu.findItem(R.id.action_service_toggle)
+				.setTitle(getResources().getString(R.string.action_service_stop));
+		}
+
+		return super.onPrepareOptionsMenu(menu);
 	}
 }

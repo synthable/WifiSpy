@@ -9,6 +9,7 @@ import android.util.Log;
 public class WifiSpyService extends Service {
 
 	public static final String TAG = "WIFISPY_SERVICE";
+	public static boolean isRunning = false;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -18,14 +19,14 @@ public class WifiSpyService extends Service {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		WifiSpy.sServiceIsRunning = true;
+		isRunning = true;
 		Log.v("SERVICE", "onCreate()");
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		WifiSpy.sServiceIsRunning = false;
+		isRunning = false;
 		Log.v("SERVICE", "onDestroy()");
 	}
 
