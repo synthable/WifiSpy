@@ -18,7 +18,6 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 
 public class WifiSpyService extends Service implements
 	GooglePlayServicesClient.ConnectionCallbacks,
@@ -35,7 +34,7 @@ public class WifiSpyService extends Service implements
 
     private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
-    private Location mLocation;
+    private Location mCurrentLocation;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -46,7 +45,6 @@ public class WifiSpyService extends Service implements
 	public void onCreate() {
 		super.onCreate();
 		isRunning = true;
-		Log.v("SERVICE", "onCreate()");
 
 		/** Setup GPS listening **/
         mLocationRequest = LocationRequest.create();
@@ -56,6 +54,8 @@ public class WifiSpyService extends Service implements
 
         mLocationClient = new LocationClient(this, this, this);
         mLocationClient.connect();
+
+        mCurrentLocation = mLocationClient.getLastLocation();
 
 		/** Turn on Wifi if not already **/
 		mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
@@ -79,13 +79,10 @@ public class WifiSpyService extends Service implements
 			mLocationClient.removeLocationUpdates(this);
         }
         mLocationClient.disconnect();
-
-		Log.v("SERVICE", "onDestroy()");
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.v("SERVICE", "onStartCommand()");
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -112,7 +109,7 @@ public class WifiSpyService extends Service implements
 
 	@Override
 	public void onLocationChanged(Location location) {
-		mLocation = location;
+		mCurrentLocation = location;
 	}
 
 	@Override
