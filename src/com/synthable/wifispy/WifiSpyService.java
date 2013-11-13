@@ -56,8 +56,6 @@ public class WifiSpyService extends Service implements
         mLocationClient = new LocationClient(this, this, this);
         mLocationClient.connect();
 
-        mCurrentLocation = mLocationClient.getLastLocation();
-
 		/** Turn on Wifi if not already **/
 		mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         if(!mWifiManager.isWifiEnabled()) {
@@ -123,6 +121,7 @@ public class WifiSpyService extends Service implements
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		mLocationClient.requestLocationUpdates(mLocationRequest, this);
+		mCurrentLocation = mLocationClient.getLastLocation();
 	}
 
 	@Override
