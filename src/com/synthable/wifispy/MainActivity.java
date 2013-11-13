@@ -29,7 +29,16 @@ public class MainActivity extends Activity {
 					finish();
 				}
 			}).show();
+		} else {
+			WifiSpyService.start(this);
 		}
+	}
+
+	@Override
+	protected void onDestroy() {
+		super.onDestroy();
+
+		WifiSpyService.stop(this);
 	}
 
 	@Override

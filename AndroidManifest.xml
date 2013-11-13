@@ -26,6 +26,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name=".WifiSpyService"
+            android:enabled="true"
+            android:label="@string/service_label" />
     </application>
 
 </manifest>
