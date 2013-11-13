@@ -8,6 +8,7 @@
         android:minSdkVersion="15"
         android:targetSdkVersion="18" />
 
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
 
@@ -34,6 +35,11 @@
             android:name=".WifiSpyService"
             android:enabled="true"
             android:label="@string/service_label" />
+
+        <provider
+            android:name=".provider.WifiSpyProvider"
+            android:authorities="com.synthable.wifispy"
+            android:exported="false" />
     </application>
 
 </manifest>
