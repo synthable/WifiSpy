@@ -1,6 +1,7 @@
 package com.synthable.wifispy.provider;
 
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
+import com.synthable.wifispy.provider.WifiSpyContract.Tags;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -45,6 +46,11 @@ public class WifiSpyProvider extends ContentProvider {
                     rowId = db.insertOrThrow(AccessPoints.TABLE, null, values);
                     break;
                 }
+                case UriUtils.TAGS: {
+                    notifyUri = Tags.URI;
+                    rowId = db.insertOrThrow(Tags.TABLE, null, values);
+                    break;
+                }
                 default:
                     throw new IllegalArgumentException("Unknown insert URI: " + uri);
             }
@@ -56,7 +62,6 @@ public class WifiSpyProvider extends ContentProvider {
             }
         } catch (SQLiteConstraintException e) {
             /** The AccessPoint is probably already in the database. **/
-            throw e;
         }
         return null;
 	}
@@ -73,6 +78,9 @@ public class WifiSpyProvider extends ContentProvider {
             case UriUtils.ACCESS_POINT:
                 qb.setTables(AccessPoints.TABLE);
                 break;
+            case UriUtils.TAGS:
+            	qb.setTables(Tags.TABLE);
+            	break;
             default:
                 throw new IllegalArgumentException("Unknown query URI: " + uri);
         }

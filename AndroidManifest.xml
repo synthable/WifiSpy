@@ -30,6 +30,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.synthable.wifispy.TagsActivity"
+            android:label="@string/title_activity_tags" >
+        </activity>
 
         <service
             android:name="com.synthable.wifispy.WifiSpyService"
