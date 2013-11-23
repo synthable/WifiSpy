@@ -14,8 +14,8 @@ public class AccessPoint {
 	private String capabilities;
 	private int frequency;
 	private int strength;
-	private long lat;
-	private long lng;
+	private double lat;
+	private double lng;
 
 	public AccessPoint() {
 	}
@@ -86,16 +86,16 @@ public class AccessPoint {
 	public void setStrength(int strength) {
 		this.strength = strength;
 	}
-	public long getLat() {
+	public double getLat() {
 		return lat;
 	}
-	public void setLat(long lat) {
+	public void setLat(double lat) {
 		this.lat = lat;
 	}
-	public long getLng() {
+	public double getLng() {
 		return lng;
 	}
-	public void setLng(long lng) {
+	public void setLng(double lng) {
 		this.lng = lng;
 	}
 }

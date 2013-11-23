@@ -1,6 +1,5 @@
 package com.synthable.wifispy;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -39,7 +38,6 @@ public class WifiSpyService extends Service implements
     private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
-    private ArrayList<AccessPoint> mAccessPoints = new ArrayList<AccessPoint>();
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -70,14 +68,6 @@ public class WifiSpyService extends Service implements
         mWifiReceiver = new WifiReceiver();
         registerReceiver(mWifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         mWifiManager.startScan();
-
-        Cursor cursor = getContentResolver().query(AccessPoints.URI, null, null, null, null);
-        cursor.moveToFirst();
-        while(cursor.isBeforeFirst()) {
-        	AccessPoint ap = new AccessPoint(cursor);
-        	mAccessPoints.add(ap);
-        	cursor.moveToNext();
-        }
 	}
 
 	@Override
@@ -109,11 +99,30 @@ public class WifiSpyService extends Service implements
 		c.stopService(i);
 	}
 
+	/**
+	 * Loop through the scanned result set to check for a known Access Point.
+	 * Update the Lat/Long of the Access Point if the signal strength is stronger than last recorded.
+	 */
 	class WifiReceiver extends BroadcastReceiver {
         public void onReceive(Context c, Intent intent) {
             List<ScanResult> results = mWifiManager.getScanResults();
             for(ScanResult result : results) {
             	AccessPoint ap = new AccessPoint(result);
+
+            	/** Check if we already have this Access Point via BSSID **/
+            	Cursor cursor = getContentResolver().query(
+        			AccessPoints.URI, AccessPoints.PROJECTION,
+        			AccessPoints.Columns.BSSID+"=?", new String[]{ ap.getBssid() }, null
+        		);
+            	if(cursor.getCount() != 0) {
+            		cursor.moveToFirst();
+                	AccessPoint old = new AccessPoint(cursor);
+                	if(ap.getStrength() > old.getStrength()) {
+                		ap.setLat(mCurrentLocation.getLatitude());
+                		ap.setLng(mCurrentLocation.getLongitude());
+                	}
+            	}
+            	cursor.close();
 
             	getContentResolver().insert(AccessPoints.URI, ap.toContentValues());
             }
