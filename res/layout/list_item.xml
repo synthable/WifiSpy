@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_marginBottom="4dp"
+    android:layout_marginLeft="6dp"
+    android:layout_marginRight="6dp"
+    android:layout_marginTop="4dp"
+    android:background="@drawable/card_background" >
+
+    <ImageView
+        android:id="@+id/access_point_item_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/common_signin_btn_icon_dark" />
+
+    <TextView
+        android:id="@+id/bssid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/access_point_item_image"
+        android:layout_alignLeft="@+id/ssid"
+        android:text="dd:ff:aa:88:dd:22:ss"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/ssid"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/access_point_item_image"
+        android:layout_marginLeft="14dp"
+        android:layout_toRightOf="@+id/access_point_item_image"
+        android:text="Surewest Sibling Wifi"
+        android:textColor="@android:color/primary_text_light"
+        android:textSize="18sp" />
+
+</RelativeLayout>
