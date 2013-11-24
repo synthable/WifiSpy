@@ -1,6 +1,7 @@
-package com.synthable.wifispy.provider;
+package com.synthable.wifispy.provider.model;
 
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
+import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints.Columns;
 
 import android.content.ContentValues;
 import android.database.Cursor;

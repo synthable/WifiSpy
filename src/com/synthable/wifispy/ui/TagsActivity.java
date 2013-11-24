@@ -1,7 +1,12 @@
-package com.synthable.wifispy;
+package com.synthable.wifispy.ui;
 
-import com.synthable.wifispy.provider.Tag;
+import com.synthable.wifispy.R;
+import com.synthable.wifispy.R.id;
+import com.synthable.wifispy.R.layout;
+import com.synthable.wifispy.R.menu;
 import com.synthable.wifispy.provider.WifiSpyContract.Tags;
+import com.synthable.wifispy.provider.adapter.TagsAdapter;
+import com.synthable.wifispy.provider.model.Tag;
 
 import android.os.Bundle;
 import android.app.AlertDialog;

@@ -1,5 +1,8 @@
-package com.synthable.wifispy;
+package com.synthable.wifispy.provider.adapter;
 
+import com.synthable.wifispy.R;
+import com.synthable.wifispy.R.id;
+import com.synthable.wifispy.R.layout;
 import com.synthable.wifispy.provider.WifiSpyContract.Tags;
 
 import android.content.Context;

@@ -1,4 +1,4 @@
-package com.synthable.wifispy;
+package com.synthable.wifispy.ui;
 
 import android.app.ActionBar;
 import android.app.LoaderManager;
@@ -19,8 +19,16 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.synthable.wifispy.R;
+import com.synthable.wifispy.WifiSpyService;
+import com.synthable.wifispy.R.id;
+import com.synthable.wifispy.R.layout;
+import com.synthable.wifispy.R.menu;
+import com.synthable.wifispy.R.string;
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
 import com.synthable.wifispy.provider.WifiSpyContract.Tags;
+import com.synthable.wifispy.provider.adapter.AccessPointsAdapter;
+import com.synthable.wifispy.provider.adapter.TagsAdapter;
 
 public class MainActivity extends ListActivity implements
 	ActionBar.OnNavigationListener,
