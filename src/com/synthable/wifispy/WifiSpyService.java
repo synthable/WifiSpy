@@ -7,18 +7,20 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
+import com.synthable.wifispy.provider.AccessPoint;
+import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.database.Cursor;
 import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 
 public class WifiSpyService extends Service implements
 	GooglePlayServicesClient.ConnectionCallbacks,
@@ -35,7 +37,7 @@ public class WifiSpyService extends Service implements
 
     private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
-    private Location mLocation;
+    private Location mCurrentLocation;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -46,7 +48,6 @@ public class WifiSpyService extends Service implements
 	public void onCreate() {
 		super.onCreate();
 		isRunning = true;
-		Log.v("SERVICE", "onCreate()");
 
 		/** Setup GPS listening **/
         mLocationRequest = LocationRequest.create();
@@ -79,13 +80,10 @@ public class WifiSpyService extends Service implements
 			mLocationClient.removeLocationUpdates(this);
         }
         mLocationClient.disconnect();
-
-		Log.v("SERVICE", "onDestroy()");
 	}
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.v("SERVICE", "onStartCommand()");
 		return super.onStartCommand(intent, flags, startId);
 	}
 
@@ -101,18 +99,39 @@ public class WifiSpyService extends Service implements
 		c.stopService(i);
 	}
 
+	/**
+	 * Loop through the scanned result set to check for a known Access Point.
+	 * Update the Lat/Long of the Access Point if the signal strength is stronger than last recorded.
+	 */
 	class WifiReceiver extends BroadcastReceiver {
         public void onReceive(Context c, Intent intent) {
-            List<ScanResult> aps = mWifiManager.getScanResults();
-            for(int i = 0; i < aps.size(); i++) {
-                Log.v("SCANRESULT", aps.get(i).SSID);
+            List<ScanResult> results = mWifiManager.getScanResults();
+            for(ScanResult result : results) {
+            	AccessPoint ap = new AccessPoint(result);
+
+            	/** Check if we already have this Access Point via BSSID **/
+            	Cursor cursor = getContentResolver().query(
+        			AccessPoints.URI, AccessPoints.PROJECTION,
+        			AccessPoints.Columns.BSSID+"=?", new String[]{ ap.getBssid() }, null
+        		);
+            	if(cursor.getCount() != 0) {
+            		cursor.moveToFirst();
+                	AccessPoint old = new AccessPoint(cursor);
+                	if(ap.getStrength() > old.getStrength()) {
+                		ap.setLat(mCurrentLocation.getLatitude());
+                		ap.setLng(mCurrentLocation.getLongitude());
+                	}
+            	}
+            	cursor.close();
+
+            	getContentResolver().insert(AccessPoints.URI, ap.toContentValues());
             }
         }
     }
 
 	@Override
 	public void onLocationChanged(Location location) {
-		mLocation = location;
+		mCurrentLocation = location;
 	}
 
 	@Override
@@ -123,6 +142,7 @@ public class WifiSpyService extends Service implements
 	@Override
 	public void onConnected(Bundle connectionHint) {
 		mLocationClient.requestLocationUpdates(mLocationRequest, this);
+		mCurrentLocation = mLocationClient.getLastLocation();
 	}
 
 	@Override

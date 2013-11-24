@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#E5E4E2"
-    tools:context=".MainActivity" >
+    tools:context=".TagsActivity" >
 
     <ListView
         android:id="@android:id/list"
@@ -14,6 +14,6 @@
         android:background="@android:color/transparent"
         android:divider="@null"
         android:dividerHeight="0dp"
-        tools:listitem="@layout/access_point_list_item" />
+        tools:listitem="@layout/tag_list_item" />
 
 </RelativeLayout>

@@ -7,5 +7,9 @@
     <string name="service_label">WifiSpy Scan Service</string>
     <string name="action_service_start">Start Scanning</string>
     <string name="action_service_stop">Stop Scanning</string>
+    <string name="action_tags">Tags</string>
+    <string name="action_tags_add">Add</string>
+    <string name="tags_add_new">New Tag Name</string>
+    <string name="title_activity_tags">TagsActivity</string>
 
 </resources>
