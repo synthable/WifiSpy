@@ -7,8 +7,8 @@ import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
-import com.synthable.wifispy.provider.AccessPoint;
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
+import com.synthable.wifispy.provider.model.AccessPoint;
 
 import android.app.Service;
 import android.content.BroadcastReceiver;
