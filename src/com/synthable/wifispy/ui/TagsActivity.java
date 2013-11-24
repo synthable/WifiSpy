@@ -1,9 +1,6 @@
 package com.synthable.wifispy.ui;
 
 import com.synthable.wifispy.R;
-import com.synthable.wifispy.R.id;
-import com.synthable.wifispy.R.layout;
-import com.synthable.wifispy.R.menu;
 import com.synthable.wifispy.provider.WifiSpyContract.Tags;
 import com.synthable.wifispy.provider.adapter.TagsAdapter;
 import com.synthable.wifispy.provider.model.Tag;
@@ -18,13 +15,18 @@ import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.EditText;
+import android.widget.ListView;
 
 public class TagsActivity extends ListActivity implements
-	LoaderManager.LoaderCallbacks<Cursor> {
+	LoaderManager.LoaderCallbacks<Cursor>,
+	MultiChoiceModeListener {
 
 	private static final int LOADER_TAGS = 0;
 
@@ -37,6 +39,9 @@ public class TagsActivity extends ListActivity implements
 
 		mTagsAdapter = new TagsAdapter(this, null);
 		getListView().setAdapter(mTagsAdapter);
+
+		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+		getListView().setMultiChoiceModeListener(this);
 
 		getLoaderManager().initLoader(LOADER_TAGS, null, this);
 	}
@@ -119,5 +124,43 @@ public class TagsActivity extends ListActivity implements
 				mTagsAdapter.swapCursor(null);
 			break;
 		}
+	}
+
+	@Override
+	public boolean onActionItemClicked(ActionMode mode, MenuItem menu) {
+		// Respond to clicks on the actions in the CAB
+        /*switch (item.getItemId()) {
+            case R.id.menu_delete:
+                deleteSelectedItems();
+                mode.finish(); // Action picked, so close the CAB
+                return true;
+            default:
+                return false;
+        }*/
+    	return true;
+	}
+
+	@Override
+	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		MenuInflater inflater = mode.getMenuInflater();
+        inflater.inflate(R.menu.tags_context, menu);
+        return true;
+	}
+
+	@Override
+	public void onDestroyActionMode(ActionMode mode) {
+		// Here you can make any necessary updates to the activity when
+        // the CAB is removed. By default, selected items are deselected/unchecked.
+	}
+
+	@Override
+	public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+		// Here you can perform updates to the CAB due to
+        // an invalidate() request
+        return false;
+	}
+
+	@Override
+	public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
 	}
 }
