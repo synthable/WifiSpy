@@ -43,7 +43,7 @@ public class MainActivity extends ListActivity implements
 		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		mAccessPointsAdapter = new AccessPointsAdapter(this, null);
-		mTagsAdapter = new TagsAdapter(this, null);
+		mTagsAdapter = new TagsAdapter(this, android.R.layout.simple_list_item_1, null);
 
 		mActionBar.setListNavigationCallbacks(mTagsAdapter, this);
 		getListView().setAdapter(mAccessPointsAdapter);

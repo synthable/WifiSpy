@@ -17,7 +17,7 @@ public class AccessPointsAdapter extends SimpleCursorAdapter {
 	};
 
 	public AccessPointsAdapter(Context context, Cursor c) {
-		super(context, R.layout.list_item, c, FROM, TO);
+		super(context, R.layout.access_point_list_item, c, FROM, TO);
 	}
 
 }

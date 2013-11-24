@@ -12,11 +12,20 @@ public class TagsAdapter extends SimpleCursorAdapter {
 		Tags.Columns.NAME
 	};
 	private static final int[] TO = new int[] {
-		android.R.id.text1
+		R.id.tag_name
 	};
 
 	public TagsAdapter(Context context, Cursor c) {
-		super(context, android.R.layout.simple_list_item_1, c, FROM, TO);
+		super(context, R.layout.tag_list_item, c, FROM, TO);
 	}
 
+	public TagsAdapter(Context context, int layout, Cursor c) {
+		super(context, layout, c, FROM, new int[] {
+			android.R.id.text1
+		});
+	}
+
+	public void setContentView(int res) {
+		this.setViewResource(res);
+	}
 }
