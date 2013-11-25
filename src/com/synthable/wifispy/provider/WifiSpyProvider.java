@@ -25,7 +25,20 @@ public class WifiSpyProvider extends ContentProvider {
 
 	@Override
     public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+		SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        int count;
+        switch (UriUtils.sUriMatcher.match(uri)) {
+            case UriUtils.TAG: {
+                String wordId = uri.getLastPathSegment();
+                count = db.delete(Tags.TABLE, Tags.Columns._ID + "=" + wordId, null);
+                break;
+            }
+            default:
+                throw new IllegalArgumentException("Unknown URI " + uri);
+        }
+
+        getContext().getContentResolver().notifyChange(uri, null);
+        return count;
 	}
 
 	@Override

@@ -1,11 +1,7 @@
 package com.synthable.wifispy.ui;
 
-import com.synthable.wifispy.R;
-import com.synthable.wifispy.provider.WifiSpyContract.Tags;
-import com.synthable.wifispy.provider.adapter.TagsAdapter;
-import com.synthable.wifispy.provider.model.Tag;
+import java.util.ArrayList;
 
-import android.os.Bundle;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -15,6 +11,7 @@ import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Loader;
 import android.database.Cursor;
+import android.os.Bundle;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,7 +19,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.EditText;
-import android.widget.ListView;
+
+import com.synthable.wifispy.R;
+import com.synthable.wifispy.provider.WifiSpyContract.Tags;
+import com.synthable.wifispy.provider.adapter.TagsAdapter;
+import com.synthable.wifispy.provider.model.Tag;
 
 public class TagsActivity extends ListActivity implements
 	LoaderManager.LoaderCallbacks<Cursor>,
@@ -30,7 +31,8 @@ public class TagsActivity extends ListActivity implements
 
 	private static final int LOADER_TAGS = 0;
 
-	TagsAdapter mTagsAdapter;
+	private TagsAdapter mTagsAdapter;
+	private ArrayList<Long> mCheckedIds = new ArrayList<Long>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +41,6 @@ public class TagsActivity extends ListActivity implements
 
 		mTagsAdapter = new TagsAdapter(this, null);
 		getListView().setAdapter(mTagsAdapter);
-
-		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		getListView().setMultiChoiceModeListener(this);
 
 		getLoaderManager().initLoader(LOADER_TAGS, null, this);
@@ -127,17 +127,17 @@ public class TagsActivity extends ListActivity implements
 	}
 
 	@Override
-	public boolean onActionItemClicked(ActionMode mode, MenuItem menu) {
-		// Respond to clicks on the actions in the CAB
-        /*switch (item.getItemId()) {
-            case R.id.menu_delete:
-                deleteSelectedItems();
-                mode.finish(); // Action picked, so close the CAB
+	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+            	for(long id : mCheckedIds) {
+            		getContentResolver().delete(Tags.buildTagUri(id), null, null);
+            	}
+            	mode.finish();
                 return true;
             default:
                 return false;
-        }*/
-    	return true;
+        }
 	}
 
 	@Override
@@ -162,5 +162,11 @@ public class TagsActivity extends ListActivity implements
 
 	@Override
 	public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+		mode.setTitle(getListView().getCheckedItemCount() + " Selected");
+		if(checked) {
+			mCheckedIds.add(id);
+		} else {
+			mCheckedIds.remove(id);
+		}
 	}
 }
