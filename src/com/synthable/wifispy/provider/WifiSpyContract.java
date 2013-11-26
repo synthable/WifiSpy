@@ -18,7 +18,7 @@ public class WifiSpyContract {
 
         public static final String TABLE = "access_points";
 
-        public static final Uri buildApUri(int id) {
+        public static final Uri buildApUri(long id) {
             return Uri.withAppendedPath(URI, String.valueOf(id));
         }
 

@@ -23,6 +23,7 @@
         android:background="@android:color/transparent"
         android:divider="@null"
         android:dividerHeight="0dp"
+        android:choiceMode="multipleChoiceModal"
         tools:listitem="@layout/access_point_list_item" />
 
 </RelativeLayout>

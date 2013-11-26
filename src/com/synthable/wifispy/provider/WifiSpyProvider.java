@@ -29,8 +29,13 @@ public class WifiSpyProvider extends ContentProvider {
         int count;
         switch (UriUtils.sUriMatcher.match(uri)) {
             case UriUtils.TAG: {
-                String wordId = uri.getLastPathSegment();
-                count = db.delete(Tags.TABLE, Tags.Columns._ID + "=" + wordId, null);
+                String id = uri.getLastPathSegment();
+                count = db.delete(Tags.TABLE, Tags.Columns._ID + "=" + id, null);
+                break;
+            }
+            case UriUtils.ACCESS_POINT: {
+                String id = uri.getLastPathSegment();
+                count = db.delete(AccessPoints.TABLE, AccessPoints.Columns._ID + "=" + id, null);
                 break;
             }
             default:

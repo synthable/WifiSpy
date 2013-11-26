@@ -1,5 +1,7 @@
 package com.synthable.wifispy.ui;
 
+import java.util.ArrayList;
+
 import android.app.ActionBar;
 import android.app.LoaderManager;
 import android.app.ListActivity;
@@ -43,6 +45,8 @@ public class MainActivity extends ListActivity implements
 	private SimpleCursorAdapter mTagsAdapter;
 	private SimpleCursorAdapter mAccessPointsAdapter;
 
+	private ArrayList<Long> mCheckedIds = new ArrayList<Long>();
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -56,8 +60,6 @@ public class MainActivity extends ListActivity implements
 
 		mActionBar.setListNavigationCallbacks(mTagsAdapter, this);
 		getListView().setAdapter(mAccessPointsAdapter);
-
-		getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
 		getListView().setMultiChoiceModeListener(this);
 
 		getLoaderManager().initLoader(LOADER_TAGS, null, this);
@@ -76,9 +78,6 @@ public class MainActivity extends ListActivity implements
 					finish();
 				}
 			}).show();
-		} else {
-			//getLoaderManager().initLoader(LOADER_TAGS, null, this);
-			//getLoaderManager().initLoader(LOADER_ACCESS_POINTS, null, this);
 		}
 	}
 
@@ -170,17 +169,17 @@ public class MainActivity extends ListActivity implements
 	}
 
 	@Override
-	public boolean onActionItemClicked(ActionMode mode, MenuItem menu) {
-		// Respond to clicks on the actions in the CAB
-        /*switch (item.getItemId()) {
-            case R.id.menu_delete:
-                deleteSelectedItems();
-                mode.finish(); // Action picked, so close the CAB
+	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+            	for(long id : mCheckedIds) {
+            		getContentResolver().delete(AccessPoints.buildApUri(id), null, null);
+            	}
+                mode.finish();
                 return true;
             default:
                 return false;
-        }*/
-    	return true;
+        }
 	}
 
 	@Override
@@ -205,5 +204,11 @@ public class MainActivity extends ListActivity implements
 
 	@Override
 	public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+		mode.setTitle(getListView().getCheckedItemCount() + " Selected");
+		if(checked) {
+			mCheckedIds.add(id);
+		} else {
+			mCheckedIds.remove(id);
+		}
 	}
 }
