@@ -5,6 +5,15 @@
     android:background="#E5E4E2"
     tools:context=".MainActivity" >
 
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:text="Empty"
+        android:textColor="@android:color/black"
+        android:textSize="18sp" />
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
@@ -14,6 +23,7 @@
         android:background="@android:color/transparent"
         android:divider="@null"
         android:dividerHeight="0dp"
+        android:choiceMode="multipleChoiceModal"
         tools:listitem="@layout/access_point_list_item" />
 
 </RelativeLayout>

@@ -10,7 +10,7 @@
         android:layout_marginLeft="2dp"
         android:layout_marginRight="2dp"
         android:layout_marginTop="4dp"
-        android:background="@drawable/card_background" >
+        android:background="@drawable/list_item_bg" >
 
         <TextView
             android:id="@+id/tag_name"

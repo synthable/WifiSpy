@@ -1,4 +1,6 @@
-package com.synthable.wifispy;
+package com.synthable.wifispy.ui;
+
+import java.util.ArrayList;
 
 import android.app.ActionBar;
 import android.app.LoaderManager;
@@ -12,19 +14,28 @@ import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.os.Bundle;
+import android.view.ActionMode;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.synthable.wifispy.R;
+import com.synthable.wifispy.WifiSpyService;
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
 import com.synthable.wifispy.provider.WifiSpyContract.Tags;
+import com.synthable.wifispy.provider.adapter.AccessPointsAdapter;
+import com.synthable.wifispy.provider.adapter.TagsAdapter;
 
 public class MainActivity extends ListActivity implements
 	ActionBar.OnNavigationListener,
-	LoaderManager.LoaderCallbacks<Cursor> {
+	LoaderManager.LoaderCallbacks<Cursor>,
+	MultiChoiceModeListener {
 
 	private static final int LOADER_TAGS = 0;
 	private static final int LOADER_ACCESS_POINTS = 1;
@@ -33,6 +44,8 @@ public class MainActivity extends ListActivity implements
 
 	private SimpleCursorAdapter mTagsAdapter;
 	private SimpleCursorAdapter mAccessPointsAdapter;
+
+	private ArrayList<Long> mCheckedIds = new ArrayList<Long>();
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +60,7 @@ public class MainActivity extends ListActivity implements
 
 		mActionBar.setListNavigationCallbacks(mTagsAdapter, this);
 		getListView().setAdapter(mAccessPointsAdapter);
+		getListView().setMultiChoiceModeListener(this);
 
 		getLoaderManager().initLoader(LOADER_TAGS, null, this);
 		getLoaderManager().initLoader(LOADER_ACCESS_POINTS, null, this);
@@ -64,9 +78,6 @@ public class MainActivity extends ListActivity implements
 					finish();
 				}
 			}).show();
-		} else {
-			//getLoaderManager().initLoader(LOADER_TAGS, null, this);
-			//getLoaderManager().initLoader(LOADER_ACCESS_POINTS, null, this);
 		}
 	}
 
@@ -154,6 +165,50 @@ public class MainActivity extends ListActivity implements
 			case LOADER_ACCESS_POINTS:
 				mAccessPointsAdapter.swapCursor(null);
 			break;
+		}
+	}
+
+	@Override
+	public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_delete:
+            	for(long id : mCheckedIds) {
+            		getContentResolver().delete(AccessPoints.buildApUri(id), null, null);
+            	}
+                mode.finish();
+                return true;
+            default:
+                return false;
+        }
+	}
+
+	@Override
+	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+		MenuInflater inflater = mode.getMenuInflater();
+        inflater.inflate(R.menu.access_points_context, menu);
+        return true;
+	}
+
+	@Override
+	public void onDestroyActionMode(ActionMode mode) {
+		// Here you can make any necessary updates to the activity when
+        // the CAB is removed. By default, selected items are deselected/unchecked.
+	}
+
+	@Override
+	public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+		// Here you can perform updates to the CAB due to
+        // an invalidate() request
+        return false;
+	}
+
+	@Override
+	public void onItemCheckedStateChanged(ActionMode mode, int position, long id, boolean checked) {
+		mode.setTitle(getListView().getCheckedItemCount() + " Selected");
+		if(checked) {
+			mCheckedIds.add(id);
+		} else {
+			mCheckedIds.remove(id);
 		}
 	}
 }

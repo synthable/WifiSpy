@@ -1,6 +1,7 @@
-package com.synthable.wifispy.provider;
+package com.synthable.wifispy.provider.model;
 
 import com.synthable.wifispy.provider.WifiSpyContract.Tags;
+import com.synthable.wifispy.provider.WifiSpyContract.Tags.Columns;
 
 import android.content.ContentValues;
 

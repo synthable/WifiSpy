@@ -8,6 +8,7 @@ public class UriUtils {
     public static final int ACCESS_POINT = 101;
 
     public static final int TAGS = 200;
+    public static final int TAG = 201;
 
     public static final UriMatcher sUriMatcher;
     static {
@@ -17,5 +18,6 @@ public class UriUtils {
         sUriMatcher.addURI(WifiSpyContract.AUTHORITY, "aps/#", ACCESS_POINT);
 
         sUriMatcher.addURI(WifiSpyContract.AUTHORITY, "tags", TAGS);
+        sUriMatcher.addURI(WifiSpyContract.AUTHORITY, "tags/#", TAG);
     }
 }
