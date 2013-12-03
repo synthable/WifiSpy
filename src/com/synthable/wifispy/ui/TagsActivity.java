@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.app.ListActivity;
 import android.app.LoaderManager;
+import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.Loader;
@@ -17,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.EditText;
 
@@ -94,6 +96,19 @@ public class TagsActivity extends ListActivity implements
 	                }
 	            )
 	            .create();
+		}
+
+		@Override
+		public void onResume() {
+			super.onResume();
+			mNewTagInput.post(new Runnable() {
+				@Override
+				public void run() {
+					mNewTagInput.requestFocusFromTouch();
+					InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(mNewTagInput, InputMethodManager.SHOW_IMPLICIT);
+				}
+			});
 		}
 	}
 
