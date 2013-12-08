@@ -1,5 +1,6 @@
 package com.synthable.wifispy.provider;
 
+import com.synthable.wifispy.provider.WifiSpyContract.AccessPointTags;
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
 import com.synthable.wifispy.provider.WifiSpyContract.Tags;
 
@@ -69,6 +70,11 @@ public class WifiSpyProvider extends ContentProvider {
                     rowId = db.insertOrThrow(Tags.TABLE, null, values);
                     break;
                 }
+                case UriUtils.ACCESS_POINT_TAG: {
+                    notifyUri = AccessPointTags.URI;
+                    rowId = db.insertWithOnConflict(AccessPointTags.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                    break;
+                }
                 default:
                     throw new IllegalArgumentException("Unknown insert URI: " + uri);
             }
@@ -96,9 +102,43 @@ public class WifiSpyProvider extends ContentProvider {
             case UriUtils.ACCESS_POINT:
                 qb.setTables(AccessPoints.TABLE);
                 break;
+            case UriUtils.ACCESS_POINT_TAG:
+                qb.setTables(AccessPointTags.TABLE);
+                break;
             case UriUtils.TAGS:
             	qb.setTables(Tags.TABLE);
             	break;
+            case UriUtils.TAG_ACCESS_POINTS:
+            	/**
+            	 * TODOD: Take the time to implement this correctly using the QuieryBuilder
+            	 */
+            	Cursor c = mDb.rawQuery("SELECT" +
+            		" access_points._id," +
+            		" access_points.bssid," +
+            		" access_points.ssid" +
+            		" FROM access_points" +
+            		" INNER JOIN access_point_tags ON access_point_tags.access_point_id = access_points._id" +
+            		" WHERE access_point_tags.tag_id = ?",
+            		new String[] {
+            			uri.getPathSegments().get(1)
+            		});
+            	c.setNotificationUri(getContext().getContentResolver(), uri);
+            	return c;
+            	/*qb.setTables(
+            		AccessPointTags.TABLE +" INNER JOIN "+ Tags.TABLE +" ON Tags."+ Tags.Columns._ID +" = AccessPointTags."+ AccessPointTags.Columns.TAG_ID
+            		+ " INNER JOIN "+ AccessPoints.TABLE +" ON AccessPoints."+ AccessPoints.Columns._ID +" = PointTags."+ AccessPointTags.Columns.ACCESS_POINT_ID
+            	);*/
+            	/*qb.setTables(AccessPointTags.TABLE +","+ AccessPoints.TABLE);
+            	selection = AccessPointTags.TABLE +"."+ AccessPointTags.Columns.TAG_ID +" = ?";
+            	selectionArgs = new String[] {
+            		uri.getPathSegments().get(1)
+            	};
+            	projection = new String[]{
+        			AccessPoints.TABLE +"."+ AccessPoints.Columns._ID,
+        			AccessPoints.TABLE +"."+ AccessPoints.Columns.BSSID,
+        			AccessPoints.TABLE +"."+ AccessPoints.Columns.SSID
+            	};
+            	break;*/
             default:
                 throw new IllegalArgumentException("Unknown query URI: " + uri);
         }

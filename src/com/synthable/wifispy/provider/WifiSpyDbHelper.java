@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.synthable.wifispy.provider.WifiSpyContract.AccessPointTags;
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
 import com.synthable.wifispy.provider.WifiSpyContract.Tags;
 
@@ -20,12 +21,14 @@ public class WifiSpyDbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(AccessPoints.SCHEMA);
         db.execSQL(Tags.SCHEMA);
+        db.execSQL(AccessPointTags.SCHEMA);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + AccessPoints.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + Tags.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + AccessPointTags.TABLE);
         onCreate(db);
     }
 }

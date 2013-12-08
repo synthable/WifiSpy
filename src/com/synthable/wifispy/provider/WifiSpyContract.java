@@ -59,6 +59,7 @@ public class WifiSpyContract {
     public static final class Tags {
         public static final Uri URI = Uri.parse(CONTENT_URI + "/tags");
         public static final Uri TAG_URI = Uri.parse(CONTENT_URI + "/tags/#");
+        public static final Uri TAG_ACCESS_POINTS_URI = Uri.parse(CONTENT_URI + "/tags/#/aps");
 
         public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.wifispy.tags";
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.wifispy.tag";
@@ -67,6 +68,13 @@ public class WifiSpyContract {
 
         public static final Uri buildTagUri(long id) {
             return Uri.withAppendedPath(URI, String.valueOf(id));
+        }
+
+        public static final Uri buildTagApsUri(long id) {
+            return Uri.withAppendedPath(URI, String.valueOf(id))
+            	.buildUpon()
+            	.appendPath("aps")
+            	.build();
         }
 
         public static final String[] PROJECTION = {
@@ -82,6 +90,39 @@ public class WifiSpyContract {
 
         public static final class Columns implements BaseColumns {
             public static final String NAME = "name";
+        }
+    }
+
+    public static final class AccessPointTags {
+        public static final Uri URI = Uri.parse(CONTENT_URI + "/ap_tags");
+        public static final Uri TAG_URI = Uri.parse(CONTENT_URI + "/ap_tags/#");
+
+        public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.wifispy.ap_tags";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.wifispy.ap_tag";
+
+        public static final String TABLE = "access_point_tags";
+
+        public static final Uri buildApTagsUri(long id) {
+        	return Uri.withAppendedPath(TAG_URI, String.valueOf(id));
+        }
+
+        public static final String[] PROJECTION = {
+            Columns._ID,
+            Columns.ACCESS_POINT_ID,
+            Columns.TAG_ID
+        };
+
+        public static final String SCHEMA = "CREATE TABLE IF NOT EXISTS "
+            + TABLE + "("
+                + Columns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + Columns.ACCESS_POINT_ID + " INTEGER,"
+                + Columns.TAG_ID + " INTEGER,"
+                + "UNIQUE("+ Columns.ACCESS_POINT_ID +","+ Columns.TAG_ID +")"
+            +");";
+
+        public static final class Columns implements BaseColumns {
+            public static final String ACCESS_POINT_ID = "access_point_id";
+            public static final String TAG_ID = "tag_id";
         }
     }
 }
