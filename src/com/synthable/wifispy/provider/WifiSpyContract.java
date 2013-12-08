@@ -12,6 +12,7 @@ public class WifiSpyContract {
     public static final class AccessPoints {
         public static final Uri URI = Uri.parse(CONTENT_URI + "/aps");
         public static final Uri ACCESSP_POINT_URI = Uri.parse(CONTENT_URI + "/aps/#");
+        public static final Uri UNTAGGED = Uri.parse(CONTENT_URI + "/aps/untagged");
 
         public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.wifispy.ap";
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.wifispy.ap";

@@ -139,6 +139,18 @@ public class WifiSpyProvider extends ContentProvider {
         			AccessPoints.TABLE +"."+ AccessPoints.Columns.SSID
             	};
             	break;*/
+            case UriUtils.ACCESS_POINTS_UNTAGGED:
+            	Cursor untagged = mDb.rawQuery("SELECT" +
+            		" access_points._id," +
+            		" access_points.bssid," +
+            		" access_points.ssid" +
+            		" FROM access_points" +
+            		" LEFT JOIN access_point_tags ON access_point_tags.access_point_id = access_points._id" +
+            		" WHERE access_points._id NOT IN (SELECT access_point_tags.access_point_id" +
+            			" FROM access_point_tags" +
+            		")", null);
+        		untagged.setNotificationUri(getContext().getContentResolver(), uri);
+            	return untagged;
             default:
                 throw new IllegalArgumentException("Unknown query URI: " + uri);
         }

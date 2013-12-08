@@ -39,6 +39,7 @@ public class MainActivity extends ListActivity implements
 	private static final int LOADER_TAGS = 0;
 	private static final int LOADER_ACCESS_POINTS = 1;
 	private static final int LOADER_ACCESS_POINTS_TAG = 2;
+	private static final int LOADER_ACCESS_POINTS_UNTAGGED = 3;
 
 	private static final int TAG_PICKER = 0;
 
@@ -151,6 +152,7 @@ public class MainActivity extends ListActivity implements
 				getLoaderManager().restartLoader(LOADER_ACCESS_POINTS, null, this);
 			break;
 			case -2:
+				getLoaderManager().restartLoader(LOADER_ACCESS_POINTS_UNTAGGED, null, this);
 			break;
 			default:
 				bundle.putLong(Tags.Columns._ID, id);
@@ -171,6 +173,8 @@ public class MainActivity extends ListActivity implements
 			case LOADER_ACCESS_POINTS_TAG:
 				long tagId = (Long) args.get(Tags.Columns._ID);
 				return new CursorLoader(this, Tags.buildTagApsUri(tagId), AccessPoints.PROJECTION, null, null, null);
+			case LOADER_ACCESS_POINTS_UNTAGGED:
+				return new CursorLoader(this, AccessPoints.UNTAGGED, AccessPoints.PROJECTION, null, null, null);
 		}
 	}
 
@@ -185,6 +189,8 @@ public class MainActivity extends ListActivity implements
 				Cursor tags = new MergeCursor(new Cursor[] {extras, cursor});
 				mTagsAdapter.swapCursor(tags);
 			break;
+			case LOADER_ACCESS_POINTS_UNTAGGED:
+				mAccessPointsAdapter.swapCursor(cursor);
 			case LOADER_ACCESS_POINTS_TAG:
 				mAccessPointsAdapter.swapCursor(cursor);
 			break;
@@ -201,6 +207,8 @@ public class MainActivity extends ListActivity implements
 			case LOADER_TAGS:
 				mTagsAdapter.swapCursor(null);
 			break;
+			case LOADER_ACCESS_POINTS_UNTAGGED:
+				mAccessPointsAdapter.swapCursor(null);
 			case LOADER_ACCESS_POINTS_TAG:
 				mAccessPointsAdapter.swapCursor(null);
 			break;
