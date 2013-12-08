@@ -117,7 +117,7 @@ public class WifiSpyContract {
                 + Columns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + Columns.ACCESS_POINT_ID + " INTEGER,"
                 + Columns.TAG_ID + " INTEGER,"
-                + " UNIQUE("+ Columns.ACCESS_POINT_ID +","+ Columns.TAG_ID +")"
+                + "UNIQUE("+ Columns.ACCESS_POINT_ID +","+ Columns.TAG_ID +")"
             +");";
 
         public static final class Columns implements BaseColumns {
