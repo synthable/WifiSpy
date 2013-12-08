@@ -19,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.AbsListView.MultiChoiceModeListener;
-import android.widget.SimpleCursorAdapter;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -45,8 +44,8 @@ public class MainActivity extends ListActivity implements
 
 	private ActionBar mActionBar;
 
-	private SimpleCursorAdapter mTagsAdapter;
-	private SimpleCursorAdapter mAccessPointsAdapter;
+	private TagsAdapter mTagsAdapter;
+	private AccessPointsAdapter mAccessPointsAdapter;
 
 	private ArrayList<Long> mCheckedIds = new ArrayList<Long>();
 

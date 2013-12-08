@@ -1,13 +1,11 @@
 package com.synthable.wifispy.provider.adapter;
 
-import com.synthable.wifispy.R;
-import com.synthable.wifispy.R.id;
-import com.synthable.wifispy.R.layout;
-import com.synthable.wifispy.provider.WifiSpyContract.Tags;
-
 import android.content.Context;
 import android.database.Cursor;
 import android.widget.SimpleCursorAdapter;
+
+import com.synthable.wifispy.R;
+import com.synthable.wifispy.provider.WifiSpyContract.Tags;
 
 public class TagsAdapter extends SimpleCursorAdapter {
 
@@ -26,9 +24,5 @@ public class TagsAdapter extends SimpleCursorAdapter {
 		super(context, layout, c, FROM, new int[] {
 			android.R.id.text1
 		});
-	}
-
-	public void setContentView(int res) {
-		this.setViewResource(res);
 	}
 }

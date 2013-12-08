@@ -38,8 +38,6 @@ public class TagsActivity extends ListActivity implements
 
 	private static final int LOADER_TAGS = 0;
 
-	private static final int TAG_PICKER = 0;
-
 	private TagsAdapter mTagsAdapter;
 	private ArrayList<Long> mCheckedIds = new ArrayList<Long>();
 	private ActionBar mActionBar;

@@ -1,8 +1,6 @@
 package com.synthable.wifispy.provider.adapter;
 
 import com.synthable.wifispy.R;
-import com.synthable.wifispy.R.id;
-import com.synthable.wifispy.R.layout;
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
 
 import android.content.Context;
@@ -22,5 +20,4 @@ public class AccessPointsAdapter extends SimpleCursorAdapter {
 	public AccessPointsAdapter(Context context, Cursor c) {
 		super(context, R.layout.access_point_list_item, c, FROM, TO);
 	}
-
 }
