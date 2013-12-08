@@ -3,8 +3,8 @@ package com.synthable.wifispy.ui;
 import java.util.ArrayList;
 
 import android.app.ActionBar;
-import android.app.LoaderManager;
 import android.app.ListActivity;
+import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnCancelListener;
@@ -19,18 +19,18 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.AbsListView.MultiChoiceModeListener;
-import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.synthable.wifispy.R;
 import com.synthable.wifispy.WifiSpyService;
+import com.synthable.wifispy.provider.WifiSpyContract.AccessPointTags;
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
 import com.synthable.wifispy.provider.WifiSpyContract.Tags;
 import com.synthable.wifispy.provider.adapter.AccessPointsAdapter;
 import com.synthable.wifispy.provider.adapter.TagsAdapter;
+import com.synthable.wifispy.provider.model.AccessPointTag;
 
 public class MainActivity extends ListActivity implements
 	ActionBar.OnNavigationListener,
@@ -39,6 +39,9 @@ public class MainActivity extends ListActivity implements
 
 	private static final int LOADER_TAGS = 0;
 	private static final int LOADER_ACCESS_POINTS = 1;
+	private static final int LOADER_ACCESS_POINTS_TAG = 2;
+
+	private static final int TAG_PICKER = 0;
 
 	private ActionBar mActionBar;
 
@@ -87,6 +90,25 @@ public class MainActivity extends ListActivity implements
 	}
 
 	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		if(requestCode == TAG_PICKER) {
+			if(resultCode == RESULT_OK) {
+				long[] ids = data.getLongArrayExtra("tags");
+				if(ids.length != 0) {
+					for(long accessPointId : mCheckedIds) {
+						for(long id : ids) {
+							AccessPointTag apt = new AccessPointTag(accessPointId, id);
+							getContentResolver().insert(AccessPointTags.URI, apt.toContentValues());
+						}
+					}
+				}
+			}
+		}
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.main, menu);
 		return true;
@@ -123,7 +145,18 @@ public class MainActivity extends ListActivity implements
 
 	@Override
 	public boolean onNavigationItemSelected(int position, long id) {
-		Toast.makeText(this, id+"", Toast.LENGTH_SHORT).show();
+		Bundle bundle = new Bundle();
+		switch((int)id) {
+			case -1:
+				getLoaderManager().restartLoader(LOADER_ACCESS_POINTS, null, this);
+			break;
+			case -2:
+			break;
+			default:
+				bundle.putLong(Tags.Columns._ID, id);
+				getLoaderManager().restartLoader(LOADER_ACCESS_POINTS_TAG, bundle, this);
+			break;
+		}
 		return false;
 	}
 
@@ -135,6 +168,9 @@ public class MainActivity extends ListActivity implements
 				return new CursorLoader(this, Tags.URI, Tags.PROJECTION, null, null, null);
 			case LOADER_ACCESS_POINTS:
 				return new CursorLoader(this, AccessPoints.URI, AccessPoints.PROJECTION, null, null, null);
+			case LOADER_ACCESS_POINTS_TAG:
+				long tagId = (Long) args.get(Tags.Columns._ID);
+				return new CursorLoader(this, Tags.buildTagApsUri(tagId), AccessPoints.PROJECTION, null, null, null);
 		}
 	}
 
@@ -149,6 +185,9 @@ public class MainActivity extends ListActivity implements
 				Cursor tags = new MergeCursor(new Cursor[] {extras, cursor});
 				mTagsAdapter.swapCursor(tags);
 			break;
+			case LOADER_ACCESS_POINTS_TAG:
+				mAccessPointsAdapter.swapCursor(cursor);
+			break;
 			case LOADER_ACCESS_POINTS:
 				mAccessPointsAdapter.swapCursor(cursor);
 			break;
@@ -161,6 +200,9 @@ public class MainActivity extends ListActivity implements
 			default:
 			case LOADER_TAGS:
 				mTagsAdapter.swapCursor(null);
+			break;
+			case LOADER_ACCESS_POINTS_TAG:
+				mAccessPointsAdapter.swapCursor(null);
 			break;
 			case LOADER_ACCESS_POINTS:
 				mAccessPointsAdapter.swapCursor(null);
@@ -177,6 +219,11 @@ public class MainActivity extends ListActivity implements
             	}
                 mode.finish();
                 return true;
+            case R.id.action_tag:
+	        	Intent intent = new Intent(Intent.ACTION_PICK, null, this, TagsActivity.class);
+	        	intent.setType(Tags.CONTENT_ITEM_TYPE);
+	            startActivityForResult(intent, TAG_PICKER);
+	            return true;
             default:
                 return false;
         }
@@ -191,14 +238,11 @@ public class MainActivity extends ListActivity implements
 
 	@Override
 	public void onDestroyActionMode(ActionMode mode) {
-		// Here you can make any necessary updates to the activity when
-        // the CAB is removed. By default, selected items are deselected/unchecked.
+		mCheckedIds = new ArrayList<Long>();
 	}
 
 	@Override
 	public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-		// Here you can perform updates to the CAB due to
-        // an invalidate() request
         return false;
 	}
 

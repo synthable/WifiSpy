@@ -2,6 +2,7 @@ package com.synthable.wifispy.ui;
 
 import java.util.ArrayList;
 
+import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
@@ -10,17 +11,21 @@ import android.app.LoaderManager;
 import android.content.Context;
 import android.content.CursorLoader;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.view.ActionMode;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView.MultiChoiceModeListener;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.synthable.wifispy.R;
 import com.synthable.wifispy.provider.WifiSpyContract.Tags;
@@ -33,24 +38,68 @@ public class TagsActivity extends ListActivity implements
 
 	private static final int LOADER_TAGS = 0;
 
+	private static final int TAG_PICKER = 0;
+
 	private TagsAdapter mTagsAdapter;
 	private ArrayList<Long> mCheckedIds = new ArrayList<Long>();
+	private ActionBar mActionBar;
+	private LayoutInflater mInflater;
+	private View mContextMenuView;
+	private String mMode;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_tags);
 
+		mMode = getIntent().getAction();
+
+		mActionBar = getActionBar();
 		mTagsAdapter = new TagsAdapter(this, null);
 		getListView().setAdapter(mTagsAdapter);
+		if(mMode == Intent.ACTION_PICK) getListView().setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 		getListView().setMultiChoiceModeListener(this);
 
 		getLoaderManager().initLoader(LOADER_TAGS, null, this);
+
+		if(mMode == Intent.ACTION_PICK) {
+			mInflater = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
+			mContextMenuView = mInflater.inflate(R.layout.action_bar_custom_view_done_cancel, null);
+	        mContextMenuView.findViewById(R.id.actionbar_done)
+		        .setOnClickListener(new View.OnClickListener() {
+		            @Override
+		            public void onClick(View v) {
+		            	long[] ids = getListView().getCheckedItemIds();
+						Intent intent = new Intent();
+						intent.putExtra("tags", ids);
+						setResult(RESULT_OK, intent);
+		                finish();
+		            }
+		        });
+	        mContextMenuView.findViewById(R.id.actionbar_cancel)
+		        .setOnClickListener(new View.OnClickListener() {
+		            @Override
+		            public void onClick(View v) {
+		                finish();
+		            }
+		        });
+
+	        mActionBar.setDisplayOptions(
+	        	ActionBar.DISPLAY_SHOW_CUSTOM,
+	        	ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_TITLE
+	        );
+	        mActionBar.setCustomView(mContextMenuView,
+	            new ActionBar.LayoutParams(
+	            	ViewGroup.LayoutParams.MATCH_PARENT,
+	            	ViewGroup.LayoutParams.MATCH_PARENT
+	            )
+	        );
+		}
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.tags, menu);
+		if(mMode != Intent.ACTION_PICK) getMenuInflater().inflate(R.menu.tags, menu);
 		return true;
 	}
 
@@ -159,19 +208,16 @@ public class TagsActivity extends ListActivity implements
 	public boolean onCreateActionMode(ActionMode mode, Menu menu) {
 		MenuInflater inflater = mode.getMenuInflater();
         inflater.inflate(R.menu.tags_context, menu);
+		mode.setCustomView(mContextMenuView);
         return true;
 	}
 
 	@Override
 	public void onDestroyActionMode(ActionMode mode) {
-		// Here you can make any necessary updates to the activity when
-        // the CAB is removed. By default, selected items are deselected/unchecked.
 	}
 
 	@Override
 	public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-		// Here you can perform updates to the CAB due to
-        // an invalidate() request
         return false;
 	}
 
