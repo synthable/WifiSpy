@@ -55,6 +55,7 @@ public class MainActivity extends ListActivity implements
 		setContentView(R.layout.activity_main);
 
 		mActionBar = getActionBar();
+		mActionBar.setDisplayShowTitleEnabled(false);
 		mActionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
 
 		mAccessPointsAdapter = new AccessPointsAdapter(this, null);
