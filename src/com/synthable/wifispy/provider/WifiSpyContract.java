@@ -42,8 +42,8 @@ public class WifiSpyContract {
                 + Columns.CAPABILITIES + " TEXT,"
                 + Columns.FREQUENCY + " INTEGER,"
                 + Columns.STRENGHT + " INTEGER,"
-                + Columns.LAT + " FLOAT,"
-                + Columns.LNG + " FLOAT"
+                + Columns.LAT + " INTEGER,"
+                + Columns.LNG + " INTEGER"
             +");";
 
         public static final class Columns implements BaseColumns {

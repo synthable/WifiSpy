@@ -1,7 +1,6 @@
 package com.synthable.wifispy.provider.model;
 
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
-import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints.Columns;
 
 import android.content.ContentValues;
 import android.database.Cursor;
@@ -15,8 +14,8 @@ public class AccessPoint {
 	private String capabilities;
 	private int frequency;
 	private int strength;
-	private double lat;
-	private double lng;
+	private int lat;
+	private int lng;
 
 	public AccessPoint() {
 	}
@@ -30,13 +29,14 @@ public class AccessPoint {
 	}
 
 	public AccessPoint(Cursor cursor) {
+		cursor.moveToFirst();
 		bssid = cursor.getString(cursor.getColumnIndex(AccessPoints.Columns.BSSID));
 		ssid = cursor.getString(cursor.getColumnIndex(AccessPoints.Columns.SSID));
 		capabilities = cursor.getString(cursor.getColumnIndex(AccessPoints.Columns.CAPABILITIES));
 		frequency = cursor.getInt(cursor.getColumnIndex(AccessPoints.Columns.FREQUENCY));
 		strength = cursor.getInt(cursor.getColumnIndex(AccessPoints.Columns.STRENGHT));
-		lat = cursor.getLong(cursor.getColumnIndex(AccessPoints.Columns.LAT));
-		lng = cursor.getLong(cursor.getColumnIndex(AccessPoints.Columns.LNG));
+		lat = cursor.getInt(cursor.getColumnIndex(AccessPoints.Columns.LAT));
+		lng = cursor.getInt(cursor.getColumnIndex(AccessPoints.Columns.LNG));
 	}
 
 	public ContentValues toContentValues() {
@@ -87,16 +87,16 @@ public class AccessPoint {
 	public void setStrength(int strength) {
 		this.strength = strength;
 	}
-	public double getLat() {
+	public int getLat() {
 		return lat;
 	}
-	public void setLat(double lat) {
+	public void setLat(int lat) {
 		this.lat = lat;
 	}
-	public double getLng() {
+	public int getLng() {
 		return lng;
 	}
-	public void setLng(double lng) {
+	public void setLng(int lng) {
 		this.lng = lng;
 	}
 }

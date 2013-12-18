@@ -118,9 +118,12 @@ public class WifiSpyService extends Service implements
             		cursor.moveToFirst();
                 	AccessPoint old = new AccessPoint(cursor);
                 	if(ap.getStrength() > old.getStrength()) {
-                		ap.setLat(mCurrentLocation.getLatitude());
-                		ap.setLng(mCurrentLocation.getLongitude());
+                		ap.setLat((int) (mCurrentLocation.getLatitude() * 1E6));
+                		ap.setLng((int) (mCurrentLocation.getLongitude() * 1E6));
                 	}
+            	} else {
+            		ap.setLat((int) (mCurrentLocation.getLatitude() * 1E6));
+            		ap.setLng((int) (mCurrentLocation.getLongitude() * 1E6));
             	}
             	cursor.close();
 
