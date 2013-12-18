@@ -13,6 +13,7 @@ public class WifiSpyContract {
         public static final Uri URI = Uri.parse(CONTENT_URI + "/aps");
         public static final Uri ACCESSP_POINT_URI = Uri.parse(CONTENT_URI + "/aps/#");
         public static final Uri UNTAGGED = Uri.parse(CONTENT_URI + "/aps/untagged");
+        public static final Uri ACCESSP_POINT_TAGS = Uri.parse(CONTENT_URI + "/aps/#/tags");
 
         public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.wifispy.ap";
         public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.wifispy.ap";
@@ -21,6 +22,13 @@ public class WifiSpyContract {
 
         public static final Uri buildApUri(long id) {
             return Uri.withAppendedPath(URI, String.valueOf(id));
+        }
+
+        public static final Uri buildApTagsUri(long id) {
+            return Uri.withAppendedPath(URI, String.valueOf(id))
+            	.buildUpon()
+            	.appendPath("tags")
+            	.build();
         }
 
         public static final String[] PROJECTION = {

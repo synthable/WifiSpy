@@ -18,10 +18,15 @@ import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.AbsListView.MultiChoiceModeListener;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.synthable.wifispy.AccessPointActivity;
 import com.synthable.wifispy.R;
 import com.synthable.wifispy.WifiSpyService;
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPointTags;
@@ -34,7 +39,8 @@ import com.synthable.wifispy.provider.model.AccessPointTag;
 public class MainActivity extends ListActivity implements
 	ActionBar.OnNavigationListener,
 	LoaderManager.LoaderCallbacks<Cursor>,
-	MultiChoiceModeListener {
+	MultiChoiceModeListener,
+	OnItemClickListener {
 
 	private static final int LOADER_TAGS = 0;
 	private static final int LOADER_ACCESS_POINTS = 1;
@@ -68,6 +74,8 @@ public class MainActivity extends ListActivity implements
 
 		getLoaderManager().initLoader(LOADER_TAGS, null, this);
 		getLoaderManager().initLoader(LOADER_ACCESS_POINTS, null, this);
+
+		getListView().setOnItemClickListener(this);
 	}
 
 	@Override
@@ -262,5 +270,11 @@ public class MainActivity extends ListActivity implements
 		} else {
 			mCheckedIds.remove(id);
 		}
+	}
+
+	@Override
+	public void onItemClick(AdapterView<?> adapter, View view, int position, long id) {
+		Intent intent = new Intent(Intent.ACTION_DEFAULT, AccessPoints.buildApUri(id), this, AccessPointActivity.class);
+		startActivity(intent);
 	}
 }

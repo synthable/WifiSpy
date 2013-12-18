@@ -105,6 +105,19 @@ public class WifiSpyProvider extends ContentProvider {
             case UriUtils.ACCESS_POINT_TAG:
                 qb.setTables(AccessPointTags.TABLE);
                 break;
+            case UriUtils.ACCESS_POINT_TAGS:
+            	Cursor c2 = mDb.rawQuery("SELECT" +
+            		" tags._id," +
+            		" tags.name" +
+            		" FROM tags" +
+            		" INNER JOIN access_point_tags ON access_point_tags.access_point_id = access_points._id" +
+            		" INNER JOIN access_points ON access_point_tags.access_point_id = access_points._id" +
+            		" WHERE access_point_tags.access_point_id = ?",
+            		new String[] {
+            			uri.getPathSegments().get(1)
+            		});
+            	c2.setNotificationUri(getContext().getContentResolver(), uri);
+            	return c2;
             case UriUtils.TAGS:
             	qb.setTables(Tags.TABLE);
             	break;

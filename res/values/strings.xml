@@ -11,5 +11,6 @@
     <string name="action_tags_add">Add</string>
     <string name="tags_add_new">New Tag Name</string>
     <string name="title_activity_tags">TagsActivity</string>
+    <string name="title_activity_access_point">AccessPointActivity</string>
 
 </resources>
