@@ -101,6 +101,10 @@ public class WifiSpyProvider extends ContentProvider {
                 break;
             case UriUtils.ACCESS_POINT:
                 qb.setTables(AccessPoints.TABLE);
+                selection = AccessPoints.TABLE +"."+ AccessPoints.Columns._ID +"=?";
+                selectionArgs = new String[] {
+                	uri.getLastPathSegment()
+                };
                 break;
             case UriUtils.ACCESS_POINT_TAG:
                 qb.setTables(AccessPointTags.TABLE);
