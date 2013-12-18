@@ -1,6 +1,5 @@
 package com.synthable.wifispy;
 
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
 import com.android.volley.toolbox.Volley;
@@ -27,7 +26,6 @@ public class AccessPointActivity extends Activity implements
 	private static final int LOADER_AP = 0;
 	private static final int LOADER_TAGS = 1;
 
-	private static RequestQueue sRequestQueue;
 	private static ImageLoader sImageLoader;
 
 	private int mAccessPointId;
@@ -60,6 +58,7 @@ public class AccessPointActivity extends Activity implements
 
 		mTagsAdapter = new TagsAdapter(this, null);
 		mTagsList = (ListView) findViewById(android.R.id.list);
+		mTagsList.setEmptyView(findViewById(android.R.id.empty));
 
 		mTagsList.setAdapter(mTagsAdapter);
 
