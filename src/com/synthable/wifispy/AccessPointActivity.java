@@ -32,6 +32,8 @@ public class AccessPointActivity extends Activity implements
 	private AccessPoint mAccessPoint;
 	private TextView mSsid;
 	private TextView mBssid;
+	private TextView mSecurity;
+	private TextView mStrength;
 	private NetworkImageView mMapImage;
 	private TagsAdapter mTagsAdapter;
 	private ListView mTagsList;
@@ -51,6 +53,8 @@ public class AccessPointActivity extends Activity implements
 
 		mSsid = (TextView) findViewById(R.id.ssid);
 		mBssid = (TextView) findViewById(R.id.bssid);
+		mSecurity = (TextView) findViewById(R.id.security);
+		mStrength = (TextView) findViewById(R.id.signal_strength);
 		mMapImage = (NetworkImageView) findViewById(R.id.static_map);
 
 		Uri uri = getIntent().getData();
@@ -108,7 +112,8 @@ public class AccessPointActivity extends Activity implements
 	private void refreshView() {
 		mSsid.setText(mAccessPoint.getSsid());
 		mBssid.setText(mAccessPoint.getBssid());
-		Log.v("STRING", String.format(sUrl, mAccessPoint.getLat()/1E6, mAccessPoint.getLng()/1E6));
+		mSecurity.setText(mAccessPoint.getCapabilities());
+		mStrength.setText(mAccessPoint.getStrength() +" dBm");
 		mMapImage.setImageUrl(String.format(sUrl, mAccessPoint.getLat()/1E6, mAccessPoint.getLng()/1E6), sImageLoader);
 	}
 }

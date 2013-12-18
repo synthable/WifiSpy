@@ -41,6 +41,27 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
             android:src="@drawable/common_signin_btn_icon_dark" />
+
+        <TextView
+            android:id="@+id/security"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/bssid"
+            android:text="WPA2"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:id="@+id/signal_strength"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/security"
+            android:text="-90 dBm"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textColor="@android:color/black" />
+
     </RelativeLayout>
 
     <TextView
