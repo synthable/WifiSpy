@@ -113,10 +113,10 @@ public class WifiSpyProvider extends ContentProvider {
             	Cursor c2 = mDb.rawQuery("SELECT" +
             		" tags._id," +
             		" tags.name" +
-            		" FROM tags" +
-            		" INNER JOIN access_point_tags ON access_point_tags.access_point_id = access_points._id" +
-            		" INNER JOIN access_points ON access_point_tags.access_point_id = access_points._id" +
-            		" WHERE access_point_tags.access_point_id = ?",
+            		" FROM access_points" +
+            			" INNER JOIN access_point_tags ON access_point_tags.access_point_id = access_points._id" +
+            			" INNER JOIN tags ON tags._id = access_point_tags.tag_id" +
+            		" WHERE access_points._id = ?",
             		new String[] {
             			uri.getPathSegments().get(1)
             		});
@@ -134,7 +134,7 @@ public class WifiSpyProvider extends ContentProvider {
             		" access_points.bssid," +
             		" access_points.ssid" +
             		" FROM access_points" +
-            		" INNER JOIN access_point_tags ON access_point_tags.access_point_id = access_points._id" +
+            			" INNER JOIN access_point_tags ON access_point_tags.access_point_id = access_points._id" +
             		" WHERE access_point_tags.tag_id = ?",
             		new String[] {
             			uri.getPathSegments().get(1)
