@@ -34,13 +34,13 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@android:color/black" />
 
-        <com.android.volley.toolbox.NetworkImageView
+        <!--com.android.volley.toolbox.NetworkImageView
             android:id="@+id/static_map"
             android:layout_width="175dp"
             android:layout_height="125dp"
             android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:src="@drawable/common_signin_btn_icon_dark" />
+            android:src="@drawable/common_signin_btn_icon_dark" /-->
 
         <TextView
             android:id="@+id/security"
