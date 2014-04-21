@@ -39,6 +39,12 @@ public class WifiSpyProvider extends ContentProvider {
                 count = db.delete(AccessPoints.TABLE, AccessPoints.Columns._ID + "=" + id, null);
                 break;
             }
+            case UriUtils.AP_TAG: {
+                String id = uri.getLastPathSegment();
+                count = db.delete(AccessPointTags.TABLE, AccessPointTags.Columns._ID + "=" + id, null);
+                uri = AccessPointTags.URI;
+                break;
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -70,7 +76,7 @@ public class WifiSpyProvider extends ContentProvider {
                     rowId = db.insertOrThrow(Tags.TABLE, null, values);
                     break;
                 }
-                case UriUtils.ACCESS_POINT_TAG: {
+                case UriUtils.AP_TAGS: {
                     notifyUri = AccessPointTags.URI;
                     rowId = db.insertWithOnConflict(AccessPointTags.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                     break;
@@ -106,12 +112,12 @@ public class WifiSpyProvider extends ContentProvider {
                 	uri.getLastPathSegment()
                 };
                 break;
-            case UriUtils.ACCESS_POINT_TAG:
+            case UriUtils.AP_TAGS:
                 qb.setTables(AccessPointTags.TABLE);
                 break;
             case UriUtils.ACCESS_POINT_TAGS:
             	Cursor c2 = mDb.rawQuery("SELECT" +
-            		" tags._id," +
+            		" access_point_tags._id," +
             		" tags.name" +
             		" FROM access_points" +
             			" INNER JOIN access_point_tags ON access_point_tags.access_point_id = access_points._id" +
@@ -120,7 +126,7 @@ public class WifiSpyProvider extends ContentProvider {
             		new String[] {
             			uri.getPathSegments().get(1)
             		});
-            	c2.setNotificationUri(getContext().getContentResolver(), uri);
+            	c2.setNotificationUri(getContext().getContentResolver(), AccessPointTags.URI);
             	return c2;
             case UriUtils.TAGS:
             	qb.setTables(Tags.TABLE);
