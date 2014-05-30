@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
+import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.view.ActionMode;
@@ -82,6 +83,19 @@ public class AccessPointActivity extends Activity implements
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.access_point, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId()) {
+			case R.id.action_map:
+				Uri uri = AccessPoints.buildApUri(mAccessPointId);
+				Intent i = new Intent(Intent.ACTION_VIEW, uri, this, WifiMapActivity.class);
+				startActivity(i);
+			break;
+		}
+
 		return true;
 	}
 
