@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:src="@drawable/common_signin_btn_icon_dark" />
+            android:src="@drawable/full" />
 
         <TextView
             android:id="@+id/bssid"

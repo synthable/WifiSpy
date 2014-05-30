@@ -9,7 +9,10 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.synthable.wifispy.provider.WifiSpyContract.AccessPoints;
 import com.synthable.wifispy.provider.model.AccessPoint;
+import com.synthable.wifispy.ui.MainActivity;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -21,6 +24,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
 
 public class WifiSpyService extends Service implements
 	GooglePlayServicesClient.ConnectionCallbacks,
@@ -38,6 +42,8 @@ public class WifiSpyService extends Service implements
     private LocationClient mLocationClient;
     private LocationRequest mLocationRequest;
     private Location mCurrentLocation;
+
+    private NotificationManager mNotificationManager;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -68,6 +74,22 @@ public class WifiSpyService extends Service implements
         mWifiReceiver = new WifiReceiver();
         registerReceiver(mWifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         mWifiManager.startScan();
+
+
+        NotificationCompat.Builder mBuilder =
+            new NotificationCompat.Builder(this)
+            .setSmallIcon(R.drawable.ic_statusbar)
+            .setContentTitle("WifiSpy is scanning...")
+            .setContentText("Click to view")
+            .setOngoing(true);
+
+        Intent i = new Intent(this, MainActivity.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+
+        mBuilder.setContentIntent(contentIntent);
+        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        mNotificationManager.notify(0, mBuilder.build());
 	}
 
 	@Override
@@ -80,6 +102,8 @@ public class WifiSpyService extends Service implements
 			mLocationClient.removeLocationUpdates(this);
         }
         mLocationClient.disconnect();
+
+        mNotificationManager.cancelAll();
 	}
 
 	@Override
