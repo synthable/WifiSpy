@@ -70,12 +70,6 @@ public class WifiSpyService extends Service implements
         	mWifiManager.setWifiEnabled(true);
         }
 
-        /** Register receiver for wifi scan results and start scanning **/
-        mWifiReceiver = new WifiReceiver();
-        registerReceiver(mWifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        mWifiManager.startScan();
-
-
         NotificationCompat.Builder mBuilder =
             new NotificationCompat.Builder(this)
             .setSmallIcon(R.drawable.ic_statusbar)
@@ -159,6 +153,11 @@ public class WifiSpyService extends Service implements
 	@Override
 	public void onLocationChanged(Location location) {
 		mCurrentLocation = location;
+
+		/** Now that we have a location, register the receiver for wifi scan results and start scanning **/
+		mWifiReceiver = new WifiReceiver();
+        registerReceiver(mWifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        mWifiManager.startScan();
 	}
 
 	@Override
