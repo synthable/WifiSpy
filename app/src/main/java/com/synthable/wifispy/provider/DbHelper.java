@@ -4,8 +4,6 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.synthable.wifispy.provider.DbContract.AccessPointTags;
-import com.synthable.wifispy.provider.DbContract.AccessPoints;
 import com.synthable.wifispy.provider.DbContract.Tags;
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -20,6 +18,7 @@ public class DbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Tags.SCHEMA);
+        db.execSQL("INSERT INTO " + Tags.TABLE + " VALUES(null, 'Default')");
     }
 
     @Override
