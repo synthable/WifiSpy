@@ -4,7 +4,6 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
@@ -28,7 +27,7 @@ public class TagsFragment extends ListFragment implements
 
     private OnFragmentInteractionListener mListener;
     public interface OnFragmentInteractionListener {
-        public void onFragmentInteraction(Uri uri);
+        public void onFragemtnSetTitle(String title);
     }
 
     private static final int LOADER_TAGS = 0;
@@ -81,6 +80,10 @@ public class TagsFragment extends ListFragment implements
         setListAdapter(mTagsAdapter);
 
         getLoaderManager().initLoader(LOADER_TAGS, null, this);
+
+        if(mListener != null) {
+            mListener.onFragemtnSetTitle(getString(R.string.tags_fragment_title));
+        }
     }
 
     @Override
