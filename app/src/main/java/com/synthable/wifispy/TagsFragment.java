@@ -5,21 +5,20 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
-public class TagsFragment extends Fragment {
+public class TagsFragment extends ListFragment {
 
     private OnFragmentInteractionListener mListener;
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
     }
 
-    private ListView mListView;
     private TempAdapter mAdapter;
     private FloatingActionButton mFloatingActionButton;
 
@@ -66,9 +65,7 @@ public class TagsFragment extends Fragment {
         });
 
         mAdapter = new TempAdapter(getActivity(), mDataset);
-
-        mListView = (ListView) view.findViewById(R.id.listview);
-        mListView.setAdapter(mAdapter);
+        setListAdapter(mAdapter);
     }
 
     @Override
