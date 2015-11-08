@@ -9,8 +9,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
 
 public class TagsFragment extends Fragment {
 
@@ -20,7 +20,17 @@ public class TagsFragment extends Fragment {
     }
 
     private ListView mListView;
+    private TempAdapter mAdapter;
     private FloatingActionButton mFloatingActionButton;
+
+    private String[] mDataset = {
+            "String One", "String Two", "String Three",
+            "String Four", "String Five", "String Six",
+            "String Seven", "String Eight", "String Nine",
+            "String Ten", "String Eleven", "String Twelve",
+            "String Thirteen", "String Fourteen", "String Fifteen",
+            "String Sixteen", "String Seventeen", "String Eighteen"
+    };
 
     public TagsFragment() {
     }
@@ -28,6 +38,7 @@ public class TagsFragment extends Fragment {
     @Override
     public void onAttach(Context activity) {
         super.onAttach(activity);
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -54,7 +65,10 @@ public class TagsFragment extends Fragment {
             }
         });
 
+        mAdapter = new TempAdapter(getActivity(), mDataset);
+
         mListView = (ListView) view.findViewById(R.id.listview);
+        mListView.setAdapter(mAdapter);
     }
 
     @Override
@@ -63,4 +77,10 @@ public class TagsFragment extends Fragment {
         mListener = null;
     }
 
+
+    public static class TempAdapter extends ArrayAdapter<String> {
+        public TempAdapter(Context context, String[] mDataset) {
+            super(context, R.layout.list_tags_item, mDataset);
+        }
+    }
 }
