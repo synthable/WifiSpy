@@ -1,16 +1,20 @@
 package com.synthable.wifispy;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.EditText;
 
 public class TagsFragment extends ListFragment {
 
@@ -59,8 +63,7 @@ public class TagsFragment extends ListFragment {
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                new AddTagDialog().show(getFragmentManager(), null);
             }
         });
 
@@ -78,6 +81,52 @@ public class TagsFragment extends ListFragment {
     public static class TempAdapter extends ArrayAdapter<String> {
         public TempAdapter(Context context, String[] mDataset) {
             super(context, R.layout.list_tags_item, mDataset);
+        }
+    }
+
+    public static class AddTagDialog extends DialogFragment implements
+            DialogInterface.OnClickListener {
+
+        private static final String TITLE = "Create a New Tag";
+
+        private EditText mNewTagInput;
+
+        @Override
+        public Dialog onCreateDialog(final Bundle savedInstanceState) {
+            View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_new_tag, null);
+            mNewTagInput = (EditText) view.findViewById(R.id.tags_new_input);
+
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(TITLE)
+                    .setView(view)
+                    .setNegativeButton(android.R.string.cancel, this)
+                    .setPositiveButton(android.R.string.ok, this)
+                    .create();
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            mNewTagInput.post(new Runnable() {
+                @Override
+                public void run() {
+                    mNewTagInput.requestFocusFromTouch();
+                    InputMethodManager imm = (InputMethodManager) getActivity()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(mNewTagInput, InputMethodManager.SHOW_IMPLICIT);
+                }
+            });
+        }
+
+        @Override
+        public void onClick(DialogInterface dialogInterface, int whichButton) {
+            if(whichButton == DialogInterface.BUTTON_POSITIVE) {
+                /*Tag tag = new Tag();
+                tag.setName(mNewTagInput.getText().toString());
+                getActivity().getContentResolver().insert(Tags.URI, tag.toContentValues());*/
+            }
+
+            dismiss();
         }
     }
 }
