@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
 public class TagsFragment extends ListFragment {
@@ -23,7 +22,6 @@ public class TagsFragment extends ListFragment {
         public void onFragmentInteraction(Uri uri);
     }
 
-    private TempAdapter mAdapter;
     private FloatingActionButton mFloatingActionButton;
 
     private String[] mDataset = {
@@ -66,9 +64,6 @@ public class TagsFragment extends ListFragment {
                 new AddTagDialog().show(getFragmentManager(), null);
             }
         });
-
-        mAdapter = new TempAdapter(getActivity(), mDataset);
-        setListAdapter(mAdapter);
     }
 
     @Override
@@ -77,12 +72,6 @@ public class TagsFragment extends ListFragment {
         mListener = null;
     }
 
-
-    public static class TempAdapter extends ArrayAdapter<String> {
-        public TempAdapter(Context context, String[] mDataset) {
-            super(context, R.layout.list_tags_item, mDataset);
-        }
-    }
 
     public static class AddTagDialog extends DialogFragment implements
             DialogInterface.OnClickListener {
