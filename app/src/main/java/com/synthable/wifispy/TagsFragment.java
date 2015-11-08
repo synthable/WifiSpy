@@ -3,11 +3,16 @@ package com.synthable.wifispy;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,14 +20,21 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
-public class TagsFragment extends ListFragment {
+import com.synthable.wifispy.provider.DbContract;
+import com.synthable.wifispy.provider.DbContract.Tags;
+
+public class TagsFragment extends ListFragment implements
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private OnFragmentInteractionListener mListener;
     public interface OnFragmentInteractionListener {
         public void onFragmentInteraction(Uri uri);
     }
 
+    private static final int LOADER_TAGS = 0;
+
     private FloatingActionButton mFloatingActionButton;
+    private TagsAdapter mTagsAdapter;
 
     private String[] mDataset = {
             "String One", "String Two", "String Three",
@@ -64,6 +76,11 @@ public class TagsFragment extends ListFragment {
                 new AddTagDialog().show(getFragmentManager(), null);
             }
         });
+
+        mTagsAdapter = new TagsAdapter(getContext());
+        setListAdapter(mTagsAdapter);
+
+        getLoaderManager().initLoader(LOADER_TAGS, null, this);
     }
 
     @Override
@@ -72,6 +89,34 @@ public class TagsFragment extends ListFragment {
         mListener = null;
     }
 
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getContext(), Tags.URI, Tags.PROJECTION, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mTagsAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mTagsAdapter.swapCursor(null);
+    }
+
+    public static class TagsAdapter extends SimpleCursorAdapter {
+
+        private static final String[] FROM = new String[] {
+                DbContract.Tags.Columns.NAME
+        };
+        private static final int[] TO = new int[] {
+                R.id.tag_name
+        };
+
+        public TagsAdapter(Context context) {
+            super(context, R.layout.list_tag_item, null, FROM, TO);
+        }
+    }
 
     public static class AddTagDialog extends DialogFragment implements
             DialogInterface.OnClickListener {
