@@ -6,11 +6,11 @@
         android:checkableBehavior="single">
         <item
             android:id="@+id/tags"
-            android:icon="@android:drawable/ic_menu_camera"
+            android:icon="@mipmap/ic_tags"
             android:title="Tags List"/>
         <item
             android:id="@+id/map"
-            android:icon="@android:drawable/ic_menu_gallery"
+            android:icon="@mipmap/ic_places"
             android:title="View Map"/>
     </group>
 
@@ -19,11 +19,11 @@
         android:checkableBehavior="none">
         <item
             android:id="@+id/settings"
-            android:icon="@android:drawable/ic_menu_share"
+            android:icon="@mipmap/ic_settings"
             android:title="Settings"/>
         <item
             android:id="@+id/about"
-            android:icon="@android:drawable/ic_menu_send"
+            android:icon="@mipmap/ic_about"
             android:title="About"/>
     </group>
 
