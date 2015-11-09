@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -130,6 +131,29 @@ public class TagsFragment extends ListFragment implements
                     case R.id.edit:
                         break;
                     case R.id.delete:
+                        /**
+                         * Make sure the user cannot delete the default tag and
+                         * tell them why it's not being removed
+                         */
+                        if(mSelectedTagIds.contains(1L)) {
+                            mSelectedTagIds.remove(1L);
+                            mListView.setItemChecked(0, false);
+
+                            Snackbar.make(mListView, R.string.tags_default_remove, Snackbar.LENGTH_INDEFINITE)
+                                    .setAction(android.R.string.ok, new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                        }
+                                    })
+                                    .show();
+                        }
+
+                        /** TODO: Make this an async batch operation **/
+                        for(Long id : mSelectedTagIds) {
+                            getActivity().getContentResolver().delete(
+                                    Tags.buildTagUri(id), null, null
+                            );
+                        }
                         break;
                 }
 
