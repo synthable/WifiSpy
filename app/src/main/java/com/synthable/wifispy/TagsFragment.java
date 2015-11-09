@@ -149,9 +149,9 @@ public class TagsFragment extends ListFragment implements
         @Override
         public void onClick(DialogInterface dialogInterface, int whichButton) {
             if(whichButton == DialogInterface.BUTTON_POSITIVE) {
-                /*Tag tag = new Tag();
+                Tag tag = new Tag();
                 tag.setName(mNewTagInput.getText().toString());
-                getActivity().getContentResolver().insert(Tags.URI, tag.toContentValues());*/
+                getActivity().getContentResolver().insert(Tags.URI, tag.toContentValues());
             }
 
             dismiss();
