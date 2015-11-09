@@ -27,22 +27,13 @@ public class TagsFragment extends ListFragment implements
 
     private OnFragmentInteractionListener mListener;
     public interface OnFragmentInteractionListener {
-        public void onFragemtnSetTitle(String title);
+        void onFragemtnSetTitle(String title);
     }
 
     private static final int LOADER_TAGS = 0;
 
     private FloatingActionButton mFloatingActionButton;
     private TagsAdapter mTagsAdapter;
-
-    private String[] mDataset = {
-            "String One", "String Two", "String Three",
-            "String Four", "String Five", "String Six",
-            "String Seven", "String Eight", "String Nine",
-            "String Ten", "String Eleven", "String Twelve",
-            "String Thirteen", "String Fourteen", "String Fifteen",
-            "String Sixteen", "String Seventeen", "String Eighteen"
-    };
 
     public TagsFragment() {
     }
