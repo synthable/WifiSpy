@@ -2,11 +2,19 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:layout_marginBottom="4dp"
-    android:layout_marginLeft="2dp"
-    android:layout_marginRight="2dp"
-    android:layout_marginTop="4dp">
+    android:layout_height="?android:attr/listPreferredItemHeight">
+
+    <TextView
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:background="@drawable/tags_ap_count_bg"
+        android:gravity="center"
+        android:text="19010"
+        android:textColor="@android:color/primary_text_dark"
+        android:textSize="14sp"/>
 
     <TextView
         android:id="@+id/tag_name"
@@ -14,19 +22,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
+        android:layout_marginLeft="72dp"
         android:text="Work Route"
         android:textColor="@android:color/primary_text_light"
         android:textSize="18sp"/>
-
-    <TextView
-        android:id="@+id/tag_access_point_count"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:text="213 APs"
-        android:textColor="@android:color/primary_text_light"
-        android:textSize="14sp"
-        android:textStyle="italic"/>
 
 </RelativeLayout>
