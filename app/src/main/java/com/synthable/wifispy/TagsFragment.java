@@ -13,14 +13,23 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AlertDialog;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import com.synthable.wifispy.provider.DbContract;
 import com.synthable.wifispy.provider.DbContract.Tags;
+import com.synthable.wifispy.provider.model.Tag;
+
+import java.util.HashSet;
 
 public class TagsFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -33,7 +42,10 @@ public class TagsFragment extends ListFragment implements
     private static final int LOADER_TAGS = 0;
 
     private FloatingActionButton mFloatingActionButton;
+    private ListView mListView;
     private TagsAdapter mTagsAdapter;
+
+    private HashSet<Long> mSelectedTagIds = new HashSet<>();
 
     public TagsFragment() {
     }
@@ -67,6 +79,7 @@ public class TagsFragment extends ListFragment implements
             }
         });
 
+        mListView = getListView();
         mTagsAdapter = new TagsAdapter(getContext());
         setListAdapter(mTagsAdapter);
 
@@ -75,6 +88,58 @@ public class TagsFragment extends ListFragment implements
         if(mListener != null) {
             mListener.onFragemtnSetTitle(getString(R.string.tags_fragment_title));
         }
+
+        mListView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        mListView.setMultiChoiceModeListener(new AbsListView.MultiChoiceModeListener() {
+            @Override
+            public void onItemCheckedStateChanged(ActionMode actionMode, int p, long i, boolean checked) {
+                int checkedCount = mListView.getCheckedItemCount();
+                actionMode.setSubtitle(checkedCount + " tags selected");
+
+                // Only show the "edit" option if not more than one item is selected
+                actionMode.getMenu().getItem(0).setVisible(checkedCount == 1);
+
+                //Buld a list of selected Tags to perform a delete on later
+                Long id = mTagsAdapter.getItemId(p);
+                if (checked) {
+                    mSelectedTagIds.add(id);
+                } else {
+                    mSelectedTagIds.remove(id);
+                }
+            }
+
+            @Override
+            public boolean onCreateActionMode(ActionMode actionMode, Menu menu) {
+                actionMode.setTitle(getString(R.string.tags_fragment_title));
+
+                MenuInflater inflater = getActivity().getMenuInflater();
+                inflater.inflate(R.menu.context_tags, menu);
+
+                return true;
+            }
+
+            @Override
+            public boolean onPrepareActionMode(ActionMode actionMode, Menu menu) {
+                return false;
+            }
+
+            @Override
+            public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    default:
+                    case R.id.edit:
+                        break;
+                    case R.id.delete:
+                        break;
+                }
+
+                return true;
+            }
+
+            @Override
+            public void onDestroyActionMode(ActionMode actionMode) {
+            }
+        });
     }
 
     @Override
