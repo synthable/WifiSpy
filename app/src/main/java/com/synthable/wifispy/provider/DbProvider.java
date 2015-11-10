@@ -55,7 +55,7 @@ public class DbProvider extends ContentProvider {
             switch (UriUtils.sUriMatcher.match(uri)) {
                 case UriUtils.TAGS: {
                     notifyUri = Tags.URI;
-                    rowId = db.insertOrThrow(Tags.TABLE, null, values);
+                    rowId = db.insertWithOnConflict(Tags.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                     break;
                 }
                 default:

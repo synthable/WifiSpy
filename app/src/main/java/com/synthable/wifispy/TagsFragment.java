@@ -129,6 +129,9 @@ public class TagsFragment extends ListFragment implements
                 switch (menuItem.getItemId()) {
                     default:
                     case R.id.edit:
+                        Long tagId = mSelectedTagIds.iterator().next().longValue();
+                        EditTagDialog dialog = EditTagDialog.newInstance(tagId);
+                        dialog.show(getFragmentManager(), null);
                         break;
                     case R.id.delete:
                         /**
@@ -157,11 +160,14 @@ public class TagsFragment extends ListFragment implements
                         break;
                 }
 
+                actionMode.finish();
+
                 return true;
             }
 
             @Override
             public void onDestroyActionMode(ActionMode actionMode) {
+                mSelectedTagIds.clear();
             }
         });
     }
@@ -187,6 +193,7 @@ public class TagsFragment extends ListFragment implements
         mTagsAdapter.swapCursor(null);
     }
 
+
     public static class TagsAdapter extends SimpleCursorAdapter {
 
         private static final String[] FROM = new String[] {
@@ -201,21 +208,21 @@ public class TagsFragment extends ListFragment implements
         }
     }
 
-    public static class AddTagDialog extends DialogFragment implements
+    public static class BaseTagDialog extends DialogFragment implements
             DialogInterface.OnClickListener {
 
-        private static final String TITLE = "Create a New Tag";
-
-        private EditText mNewTagInput;
+        protected View mDialogLayout;
+        protected EditText mTagInput;
+        protected Long mTagId;
+        protected AlertDialog.Builder mDialogBuilder;
 
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
-            View view = getActivity().getLayoutInflater().inflate(R.layout.dialog_new_tag, null);
-            mNewTagInput = (EditText) view.findViewById(R.id.tags_new_input);
+            mDialogLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_new_tag, null);
+            mTagInput = (EditText) mDialogLayout.findViewById(R.id.tags_new_input);
 
-            return new AlertDialog.Builder(getActivity())
-                    .setTitle(TITLE)
-                    .setView(view)
+            return mDialogBuilder
+                    .setView(mDialogLayout)
                     .setNegativeButton(android.R.string.cancel, this)
                     .setPositiveButton(android.R.string.ok, this)
                     .create();
@@ -224,13 +231,13 @@ public class TagsFragment extends ListFragment implements
         @Override
         public void onResume() {
             super.onResume();
-            mNewTagInput.post(new Runnable() {
+            mTagInput.post(new Runnable() {
                 @Override
                 public void run() {
-                    mNewTagInput.requestFocusFromTouch();
+                    mTagInput.requestFocusFromTouch();
                     InputMethodManager imm = (InputMethodManager) getActivity()
                             .getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(mNewTagInput, InputMethodManager.SHOW_IMPLICIT);
+                    imm.showSoftInput(mTagInput, InputMethodManager.SHOW_IMPLICIT);
                 }
             });
         }
@@ -239,11 +246,48 @@ public class TagsFragment extends ListFragment implements
         public void onClick(DialogInterface dialogInterface, int whichButton) {
             if(whichButton == DialogInterface.BUTTON_POSITIVE) {
                 Tag tag = new Tag();
-                tag.setName(mNewTagInput.getText().toString());
+                tag.setId(mTagId);
+                tag.setName(mTagInput.getText().toString());
                 getActivity().getContentResolver().insert(Tags.URI, tag.toContentValues());
             }
 
             dismiss();
+        }
+    }
+
+    public static class AddTagDialog extends BaseTagDialog {
+
+        protected static final String TITLE = "Edit Tag Name";
+
+        @Override
+        public Dialog onCreateDialog(final Bundle savedInstanceState) {
+            mDialogBuilder = new AlertDialog.Builder(getActivity())
+                    .setTitle(TITLE);
+
+            return super.onCreateDialog(savedInstanceState);
+        }
+    }
+
+    public static class EditTagDialog extends BaseTagDialog {
+
+        protected static final String TITLE = "Edit Tag Name";
+
+        public static EditTagDialog newInstance(Long id) {
+            Bundle args = new Bundle();
+            args.putLong(Tags.Columns._ID, id);
+
+            EditTagDialog dialog = new EditTagDialog();
+            dialog.setArguments(args);
+            return dialog;
+        }
+
+        @Override
+        public Dialog onCreateDialog(final Bundle savedInstanceState) {
+            mTagId = getArguments().getLong(Tags.Columns._ID);
+            mDialogBuilder = new AlertDialog.Builder(getActivity())
+                    .setTitle(TITLE);
+
+            return super.onCreateDialog(savedInstanceState);
         }
     }
 }
