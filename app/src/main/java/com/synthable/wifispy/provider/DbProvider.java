@@ -1,6 +1,7 @@
 package com.synthable.wifispy.provider;
 
 import com.synthable.wifispy.provider.DbContract.Tags;
+import com.synthable.wifispy.provider.DbContract.AccessPoints;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -32,6 +33,11 @@ public class DbProvider extends ContentProvider {
                 count = db.delete(Tags.TABLE, Tags.Columns._ID + "=" + id, null);
                 break;
             }
+            case UriUtils.ACCESS_POINT: {
+                String id = uri.getLastPathSegment();
+                count = db.delete(AccessPoints.TABLE, AccessPoints.Columns._ID + "=" + id, null);
+                break;
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -58,6 +64,11 @@ public class DbProvider extends ContentProvider {
                     rowId = db.insertWithOnConflict(Tags.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                     break;
                 }
+                case UriUtils.ACCESS_POINTS: {
+                    notifyUri = AccessPoints.URI;
+                    rowId = db.insertWithOnConflict(AccessPoints.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                    break;
+                }
                 default:
                     throw new IllegalArgumentException("Unknown insert URI: " + uri);
             }
@@ -81,6 +92,9 @@ public class DbProvider extends ContentProvider {
         switch (UriUtils.sUriMatcher.match(uri)) {
             case UriUtils.TAGS:
                 qb.setTables(Tags.TABLE);
+                break;
+            case UriUtils.ACCESS_POINTS:
+                qb.setTables(AccessPoints.TABLE);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown query URI: " + uri);
