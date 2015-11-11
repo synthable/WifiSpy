@@ -1,4 +1,4 @@
-package com.synthable.wifispy;
+package com.synthable.wifispy.ui.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -26,6 +26,7 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.synthable.wifispy.R;
 import com.synthable.wifispy.provider.DbContract;
 import com.synthable.wifispy.provider.DbContract.Tags;
 import com.synthable.wifispy.provider.model.Tag;
