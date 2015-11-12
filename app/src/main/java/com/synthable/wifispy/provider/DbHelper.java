@@ -10,7 +10,7 @@ import com.synthable.wifispy.provider.DbContract.AccessPoints;
 public class DbHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "wifispy.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

@@ -1,21 +1,34 @@
 package com.synthable.wifispy.ui.fragment;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 import com.synthable.wifispy.R;
+import com.synthable.wifispy.provider.DbContract.AccessPoints;
 
-public class AccessPointsFragment extends ListFragment {
+public class AccessPointsFragment extends ListFragment implements
+        LoaderManager.LoaderCallbacks<Cursor> {
 
     private OnFragmentInteractionListener mListener;
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(Uri uri);
     }
+
+    private static final int LOADER_ACCESS_POINTS = 0;
+
+    private ListView mListView;
+    private AccessPointsAdapter mAccessPointsAdapter;
 
     public AccessPointsFragment() {
     }
@@ -34,6 +47,10 @@ public class AccessPointsFragment extends ListFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mAccessPointsAdapter = new AccessPointsAdapter(getContext());
+
+        getLoaderManager().initLoader(LOADER_ACCESS_POINTS, null, this);
     }
 
     @Override
@@ -42,8 +59,45 @@ public class AccessPointsFragment extends ListFragment {
     }
 
     @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mListView = getListView();
+        setListAdapter(mAccessPointsAdapter);
+    }
+
+    @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new CursorLoader(getContext(), AccessPoints.URI, AccessPoints.PROJECTION, null, null, null);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
+        mAccessPointsAdapter.swapCursor(cursor);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        mAccessPointsAdapter.swapCursor(null);
+    }
+
+    public static class AccessPointsAdapter extends SimpleCursorAdapter {
+
+        private static final String[] FROM = new String[] {
+                AccessPoints.Columns.SSID
+        };
+        private static final int[] TO = new int[] {
+                R.id.ssid
+        };
+
+        public AccessPointsAdapter(Context context) {
+            super(context, R.layout.list_access_point_item, null, FROM, TO);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.synthable.wifispy;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -10,11 +11,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import com.synthable.wifispy.ui.fragment.AccessPointsFragment;
 import com.synthable.wifispy.ui.fragment.TagsFragment;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        TagsFragment.OnFragmentInteractionListener {
+        TagsFragment.OnFragmentInteractionListener,
+        AccessPointsFragment.OnFragmentInteractionListener {
 
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
@@ -38,7 +41,8 @@ public class MainActivity extends AppCompatActivity implements
         mNavigationView.setNavigationItemSelectedListener(this);
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_container, new TagsFragment())
+                //.replace(R.id.fragment_container, new TagsFragment())
+                .replace(R.id.fragment_container, new AccessPointsFragment())
                 .commit();
     }
 
@@ -95,5 +99,10 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onFragemtnSetTitle(String title) {
         getSupportActionBar().setTitle(title);
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
