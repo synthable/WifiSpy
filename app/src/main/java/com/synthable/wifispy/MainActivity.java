@@ -1,8 +1,12 @@
 package com.synthable.wifispy;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -18,6 +22,8 @@ public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         TagsFragment.OnFragmentInteractionListener,
         AccessPointsFragment.OnFragmentInteractionListener {
+
+    private static final int PERMISSION_REQUEST_LOCATION = 1;
 
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
@@ -44,6 +50,13 @@ public class MainActivity extends AppCompatActivity implements
                 //.replace(R.id.fragment_container, new TagsFragment())
                 .replace(R.id.fragment_container, new AccessPointsFragment())
                 .commit();
+
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+            }, PERMISSION_REQUEST_LOCATION);
+        } else {
+        }
     }
 
     @Override
@@ -52,6 +65,19 @@ public class MainActivity extends AppCompatActivity implements
             mDrawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        switch (requestCode) {
+            case PERMISSION_REQUEST_LOCATION: {
+                if( grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    finish();
+                }
+            }
         }
     }
 
