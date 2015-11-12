@@ -56,6 +56,16 @@ public class MainActivity extends AppCompatActivity implements
                     Manifest.permission.ACCESS_COARSE_LOCATION
             }, PERMISSION_REQUEST_LOCATION);
         } else {
+            WifiSpyService.start(this);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if(WifiSpyService.isRunning) {
+            WifiSpyService.stop(this);
         }
     }
 
