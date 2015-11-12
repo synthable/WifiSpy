@@ -13,6 +13,10 @@
             android:id="@+id/map"
             android:icon="@mipmap/ic_places"
             android:title="View Map"/>
+
+        <item
+            android:id="@+id/scan"
+            android:title="Start Scan"/>
     </group>
 
     <group
