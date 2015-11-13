@@ -2,6 +2,11 @@ package com.synthable.wifispy;
 
 import java.util.List;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.synthable.wifispy.provider.DbContract.AccessPoints;
 import com.synthable.wifispy.provider.model.AccessPoint;
 
@@ -12,14 +17,27 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
+import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Bundle;
 import android.os.IBinder;
 
-public class WifiSpyService extends Service {
+public class WifiSpyService extends Service implements
+        GoogleApiClient.ConnectionCallbacks,
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener {
+
+    private static final int UPDATE_INTERVAL = 1000 * 5;
+    private static final int FASTEST_INTERVAL = 1000 * 1;
 
     public static final String TAG = "WIFISPY_SERVICE";
     public static boolean isRunning = false;
+    public static boolean isScanning = false;
+
+    private GoogleApiClient mGoogleApiClient;
+    private Location mLastLocation;
+    private LocationRequest mLocationRequest;
 
     private WifiManager mWifiManager;
     private WifiReceiver mWifiReceiver;
@@ -36,11 +54,26 @@ public class WifiSpyService extends Service {
         super.onCreate();
         isRunning = true;
 
+        mWifiReceiver = new WifiReceiver();
+        registerReceiver(mWifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+
+        mGoogleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+
+        mLocationRequest = new LocationRequest();
+        mLocationRequest.setInterval(UPDATE_INTERVAL);
+        mLocationRequest.setFastestInterval(FASTEST_INTERVAL);
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
         /** Turn on Wifi if not already **/
         mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         if(!mWifiManager.isWifiEnabled()) {
             mWifiManager.setWifiEnabled(true);
         }
+        mWifiManager.startScan();
 
 /*        NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
@@ -56,10 +89,6 @@ public class WifiSpyService extends Service {
         mBuilder.setContentIntent(contentIntent);
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(0, mBuilder.build());*/
-
-        mWifiReceiver = new WifiReceiver();
-        registerReceiver(mWifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        mWifiManager.startScan();
     }
 
     @Override
@@ -67,6 +96,10 @@ public class WifiSpyService extends Service {
         super.onDestroy();
         unregisterReceiver(mWifiReceiver);
         isRunning = false;
+        isScanning = false;
+
+        LocationServices.FusedLocationApi
+                .removeLocationUpdates(mGoogleApiClient, this);
 
 //        mNotificationManager.cancelAll();
     }
@@ -88,6 +121,41 @@ public class WifiSpyService extends Service {
         c.stopService(i);
     }
 
+    @Override
+    public void onConnected(Bundle bundle) {
+        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+        if (mLastLocation != null) {
+            startScanning();
+        }
+
+        LocationServices.FusedLocationApi
+                .requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mLastLocation = location;
+
+        startScanning();
+    }
+
+    private void startScanning() {
+        if(!isScanning) {
+            isScanning = true;
+            mWifiManager.startScan();
+        }
+    }
+
     /**
      * Loop through the scanned result set to check for a known Access Point.
      * Update the Lat/Long of the Access Point if the signal strength is stronger than last recorded.
@@ -107,12 +175,12 @@ public class WifiSpyService extends Service {
                     cursor.moveToFirst();
                     AccessPoint old = new AccessPoint(cursor);
                     if(ap.getStrength() > old.getStrength()) {
-//                        ap.setLat((int) (mCurrentLocation.getLatitude() * 1E6));
-//                        ap.setLng((int) (mCurrentLocation.getLongitude() * 1E6));
+                        ap.setLat(mLastLocation.getLatitude());
+                        ap.setLng(mLastLocation.getLongitude());
                     }
                 } else {
-//                    ap.setLat((int) (mCurrentLocation.getLatitude() * 1E6));
-//                    ap.setLng((int) (mCurrentLocation.getLongitude() * 1E6));
+                    ap.setLat(mLastLocation.getLatitude());
+                    ap.setLng(mLastLocation.getLongitude());
                 }
                 cursor.close();
 
