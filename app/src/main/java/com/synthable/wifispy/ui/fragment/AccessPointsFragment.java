@@ -3,6 +3,7 @@ package com.synthable.wifispy.ui.fragment;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -15,6 +16,7 @@ import android.widget.ListView;
 
 import com.synthable.wifispy.FragmentInteraction;
 import com.synthable.wifispy.R;
+import com.synthable.wifispy.WifiSpyService;
 import com.synthable.wifispy.provider.DbContract.AccessPoints;
 
 public class AccessPointsFragment extends ListFragment implements
@@ -26,6 +28,7 @@ public class AccessPointsFragment extends ListFragment implements
 
     private ListView mListView;
     private AccessPointsAdapter mAccessPointsAdapter;
+    private FloatingActionButton mFloatingActionButton;
 
     public AccessPointsFragment() {
     }
@@ -58,6 +61,21 @@ public class AccessPointsFragment extends ListFragment implements
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
+        mFloatingActionButton.setImageResource(WifiSpyService.isRunning ? R.mipmap.ic_stop : R.mipmap.ic_play);
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(WifiSpyService.isRunning) {
+                    mFloatingActionButton.setImageResource(R.mipmap.ic_stop);
+                    WifiSpyService.stop(getActivity());
+                } else {
+                    mFloatingActionButton.setImageResource(R.mipmap.ic_play);
+                    WifiSpyService.start(getActivity());
+                }
+            }
+        });
 
         mListView = getListView();
         setListAdapter(mAccessPointsAdapter);

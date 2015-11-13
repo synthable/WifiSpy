@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity implements
                     Manifest.permission.ACCESS_FINE_LOCATION
             }, PERMISSION_REQUEST_LOCATION);
         } else {
-            WifiSpyService.start(this);
+
         }
     }
 
