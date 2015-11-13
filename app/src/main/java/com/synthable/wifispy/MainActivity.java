@@ -2,7 +2,6 @@ package com.synthable.wifispy;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
@@ -20,7 +19,6 @@ import com.synthable.wifispy.ui.fragment.TagsFragment;
 
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
-        TagsFragment.OnFragmentInteractionListener,
         FragmentInteraction.OnInteractionListener {
 
     private static final int PERMISSION_REQUEST_LOCATION = 1;
@@ -47,7 +45,6 @@ public class MainActivity extends AppCompatActivity implements
         mNavigationView.setNavigationItemSelectedListener(this);
 
         getSupportFragmentManager().beginTransaction()
-                //.replace(R.id.fragment_container, new TagsFragment())
                 .replace(R.id.fragment_container, new AccessPointsFragment())
                 .commit();
 
@@ -103,7 +100,15 @@ public class MainActivity extends AppCompatActivity implements
 
         switch(item.getItemId()) {
             default:
+            case R.id.accessp_points:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new AccessPointsFragment())
+                        .commit();
+                break;
             case R.id.tags:
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, new TagsFragment())
+                        .commit();
                 break;
             case R.id.map:
                 break;

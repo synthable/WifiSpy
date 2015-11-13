@@ -6,5 +6,6 @@
 
     <string name="action_settings">Settings</string>
     <string name="tags_fragment_title">Tags</string>
+    <string name="taccess_points_fragment_title">Access Points</string>
     <string name="tags_default_remove">Default tag cannot be removed</string>
 </resources>
