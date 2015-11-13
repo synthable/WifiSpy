@@ -2,7 +2,6 @@ package com.synthable.wifispy.ui.fragment;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -14,16 +13,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.synthable.wifispy.FragmentInteraction;
 import com.synthable.wifispy.R;
 import com.synthable.wifispy.provider.DbContract.AccessPoints;
 
 public class AccessPointsFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    private OnFragmentInteractionListener mListener;
-    public interface OnFragmentInteractionListener {
-        void onFragmentInteraction(Uri uri);
-    }
+    private FragmentInteraction.OnInteractionListener mListener;
 
     private static final int LOADER_ACCESS_POINTS = 0;
 
@@ -37,7 +34,7 @@ public class AccessPointsFragment extends ListFragment implements
     public void onAttach(Context activity) {
         super.onAttach(activity);
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (FragmentInteraction.OnInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -64,6 +61,10 @@ public class AccessPointsFragment extends ListFragment implements
 
         mListView = getListView();
         setListAdapter(mAccessPointsAdapter);
+
+        if(mListener != null) {
+            mListener.onFragemtnSetTitle(getString(R.string.taccess_points_fragment_title));
+        }
     }
 
     @Override

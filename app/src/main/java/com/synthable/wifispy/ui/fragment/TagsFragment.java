@@ -26,6 +26,7 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.synthable.wifispy.FragmentInteraction;
 import com.synthable.wifispy.R;
 import com.synthable.wifispy.provider.DbContract;
 import com.synthable.wifispy.provider.DbContract.Tags;
@@ -36,10 +37,7 @@ import java.util.HashSet;
 public class TagsFragment extends ListFragment implements
         LoaderManager.LoaderCallbacks<Cursor> {
 
-    private OnFragmentInteractionListener mListener;
-    public interface OnFragmentInteractionListener {
-        void onFragemtnSetTitle(String title);
-    }
+    private FragmentInteraction.OnInteractionListener mListener;
 
     private static final int LOADER_TAGS = 0;
 
@@ -57,7 +55,7 @@ public class TagsFragment extends ListFragment implements
         super.onAttach(activity);
 
         try {
-            mListener = (OnFragmentInteractionListener) activity;
+            mListener = (FragmentInteraction.OnInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");

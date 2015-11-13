@@ -21,7 +21,7 @@ import com.synthable.wifispy.ui.fragment.TagsFragment;
 public class MainActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,
         TagsFragment.OnFragmentInteractionListener,
-        AccessPointsFragment.OnFragmentInteractionListener {
+        FragmentInteraction.OnInteractionListener {
 
     private static final int PERMISSION_REQUEST_LOCATION = 1;
 
@@ -119,10 +119,5 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onFragemtnSetTitle(String title) {
         getSupportActionBar().setTitle(title);
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-
     }
 }
