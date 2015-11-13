@@ -38,6 +38,8 @@ public class WifiSpyService extends Service implements
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
+    private double mLatitude;
+    private double mLongitude;
 
     private WifiManager mWifiManager;
     private WifiReceiver mWifiReceiver;
@@ -73,7 +75,6 @@ public class WifiSpyService extends Service implements
         if(!mWifiManager.isWifiEnabled()) {
             mWifiManager.setWifiEnabled(true);
         }
-        mWifiManager.startScan();
 
 /*        NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
@@ -125,6 +126,9 @@ public class WifiSpyService extends Service implements
     public void onConnected(Bundle bundle) {
         mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
         if (mLastLocation != null) {
+            mLatitude = mLastLocation.getLatitude();
+            mLongitude = mLastLocation.getLongitude();
+
             startScanning();
         }
 
@@ -145,6 +149,8 @@ public class WifiSpyService extends Service implements
     @Override
     public void onLocationChanged(Location location) {
         mLastLocation = location;
+        mLatitude = mLastLocation.getLatitude();
+        mLongitude = mLastLocation.getLongitude();
 
         startScanning();
     }
@@ -175,12 +181,12 @@ public class WifiSpyService extends Service implements
                     cursor.moveToFirst();
                     AccessPoint old = new AccessPoint(cursor);
                     if(ap.getStrength() > old.getStrength()) {
-                        ap.setLat(mLastLocation.getLatitude());
-                        ap.setLng(mLastLocation.getLongitude());
+                        ap.setLat(mLatitude);
+                        ap.setLng(mLongitude);
                     }
                 } else {
-                    ap.setLat(mLastLocation.getLatitude());
-                    ap.setLng(mLastLocation.getLongitude());
+                    ap.setLat(mLatitude);
+                    ap.setLng(mLongitude);
                 }
                 cursor.close();
 
