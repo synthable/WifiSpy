@@ -7,7 +7,7 @@
         <item
             android:id="@+id/accessp_points"
             android:checked="true"
-            android:icon="@mipmap/ic_tags"
+            android:icon="@mipmap/ic_wifi"
             android:title="Access Points"/>
         <item
             android:id="@+id/tags"
