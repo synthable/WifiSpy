@@ -99,8 +99,10 @@ public class WifiSpyService extends Service implements
         isRunning = false;
         isScanning = false;
 
-        LocationServices.FusedLocationApi
-                .removeLocationUpdates(mGoogleApiClient, this);
+        if(mGoogleApiClient.isConnected()) {
+            LocationServices.FusedLocationApi
+                    .removeLocationUpdates(mGoogleApiClient, this);
+        }
 
 //        mNotificationManager.cancelAll();
     }
