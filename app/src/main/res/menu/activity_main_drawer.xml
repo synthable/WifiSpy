@@ -5,6 +5,11 @@
         android:id="@+id/menu_top"
         android:checkableBehavior="single">
         <item
+            android:id="@+id/accessp_points"
+            android:checked="true"
+            android:icon="@mipmap/ic_wifi"
+            android:title="Access Points"/>
+        <item
             android:id="@+id/tags"
             android:checked="true"
             android:icon="@mipmap/ic_tags"
