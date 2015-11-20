@@ -2,6 +2,7 @@ package com.synthable.wifispy.provider;
 
 import com.synthable.wifispy.provider.DbContract.Tags;
 import com.synthable.wifispy.provider.DbContract.AccessPoints;
+import com.synthable.wifispy.provider.DbContract.AccessPointTags;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -38,6 +39,12 @@ public class DbProvider extends ContentProvider {
                 count = db.delete(AccessPoints.TABLE, AccessPoints.Columns._ID + "=" + id, null);
                 break;
             }
+            case UriUtils.AP_TAG: {
+                String id = uri.getLastPathSegment();
+                count = db.delete(AccessPointTags.TABLE, AccessPointTags.Columns._ID + "=" + id, null);
+                uri = AccessPointTags.URI;
+                break;
+            }
             default:
                 throw new IllegalArgumentException("Unknown URI " + uri);
         }
@@ -69,6 +76,11 @@ public class DbProvider extends ContentProvider {
                     rowId = db.insertWithOnConflict(AccessPoints.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
                     break;
                 }
+                case UriUtils.AP_TAGS: {
+                    notifyUri = AccessPointTags.URI;
+                    rowId = db.insertWithOnConflict(AccessPointTags.TABLE, null, values, SQLiteDatabase.CONFLICT_REPLACE);
+                    break;
+                }
                 default:
                     throw new IllegalArgumentException("Unknown insert URI: " + uri);
             }
@@ -91,10 +103,21 @@ public class DbProvider extends ContentProvider {
 
         switch (UriUtils.sUriMatcher.match(uri)) {
             case UriUtils.TAGS:
+                /*Cursor tagsCursor = mDb.rawQuery("SELECT "+
+                        "tags._id AS _id, tags.name AS name, COUNT(access_point_tags._id) AS count "+
+                        "FROM tags, access_point_tags "+
+                        "WHERE access_point_tags.tag_id = tags._id",
+                        null
+                );*/
                 qb.setTables(Tags.TABLE);
                 break;
+                /*tagsCursor.setNotificationUri(getContext().getContentResolver(), uri);
+                return tagsCursor;*/
             case UriUtils.ACCESS_POINTS:
                 qb.setTables(AccessPoints.TABLE);
+                break;
+            case UriUtils.AP_TAGS:
+                qb.setTables(AccessPointTags.TABLE);
                 break;
             default:
                 throw new IllegalArgumentException("Unknown query URI: " + uri);

@@ -82,4 +82,38 @@ public class DbContract {
             public static final String LNG = "longitude";
         }
     }
+
+    public static final class AccessPointTags {
+        public static final Uri URI = Uri.parse(CONTENT_URI + "/ap_tags");
+        public static final Uri TAG_URI = Uri.parse(CONTENT_URI + "/ap_tags/#");
+
+        public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.wifispy.ap_tags";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.wifispy.ap_tag";
+
+        public static final Uri buildApTagsUri(long id) {
+            return Uri.withAppendedPath(URI, String.valueOf(id));
+        }
+
+        public static final String[] PROJECTION = {
+                Columns._ID,
+                Columns.ACCESS_POINT_ID,
+                Columns.TAG_ID
+        };
+
+        public static final String TABLE = "access_point_tags";
+        public static final String SCHEMA = "CREATE TABLE IF NOT EXISTS "
+                + TABLE + "("
+                + Columns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + Columns.ACCESS_POINT_ID + " INTEGER,"
+                + Columns.TAG_ID + " INTEGER,"
+                + "UNIQUE(" + Columns.ACCESS_POINT_ID + "," + Columns.TAG_ID + "),"
+                + "FOREIGN KEY(" + Columns.TAG_ID + ") REFERENCES " + Tags.TABLE + "(" + Tags.Columns._ID + "),"
+                + "FOREIGN KEY(" + Columns.ACCESS_POINT_ID + ") REFERENCES " + AccessPoints.TABLE + "(" + AccessPoints.Columns._ID + ")"
+                + ");";
+
+        public static final class Columns implements BaseColumns {
+            public static final String ACCESS_POINT_ID = "access_point_id";
+            public static final String TAG_ID = "tag_id";
+        }
+    }
 }
