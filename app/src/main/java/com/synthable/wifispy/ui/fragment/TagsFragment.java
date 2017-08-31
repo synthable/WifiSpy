@@ -196,7 +196,7 @@ public class TagsFragment extends ListFragment implements
     public static class TagsAdapter extends SimpleCursorAdapter {
 
         private static final String[] FROM = new String[] {
-                DbContract.Tags.Columns.NAME
+                Tags.Columns.NAME
         };
         private static final int[] TO = new int[] {
                 R.id.tag_name

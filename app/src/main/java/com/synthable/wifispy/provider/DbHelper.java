@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.synthable.wifispy.provider.DbContract.Tags;
 import com.synthable.wifispy.provider.DbContract.AccessPoints;
+import com.synthable.wifispy.provider.DbContract.AccessPointTags;
 
 public class DbHelper extends SQLiteOpenHelper {
 
@@ -20,14 +21,15 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(Tags.SCHEMA);
         db.execSQL("INSERT INTO " + Tags.TABLE + " VALUES(null, 'Default')");
-
         db.execSQL(AccessPoints.SCHEMA);
+        db.execSQL(AccessPointTags.SCHEMA);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + Tags.TABLE);
         db.execSQL("DROP TABLE IF EXISTS " + AccessPoints.TABLE);
+        db.execSQL("DROP TABLE IF EXISTS " + AccessPointTags.TABLE);
         onCreate(db);
     }
 }
