@@ -11,6 +11,7 @@ import com.synthable.wifispy.provider.DbContract.AccessPoints;
 import com.synthable.wifispy.provider.model.AccessPoint;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -22,6 +23,8 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 public class WifiSpyService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
@@ -64,6 +67,7 @@ public class WifiSpyService extends Service implements
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
+        mGoogleApiClient.connect();
 
         mLocationRequest = new LocationRequest();
         mLocationRequest.setInterval(UPDATE_INTERVAL);
@@ -76,14 +80,14 @@ public class WifiSpyService extends Service implements
             mWifiManager.setWifiEnabled(true);
         }
 
-/*        NotificationCompat.Builder mBuilder =
+        /*NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("WifiSpy is scanning...")
                         .setContentText("Click to view")
                         .setOngoing(true);
 
-        Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, MainDrawerActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
 
@@ -140,12 +144,12 @@ public class WifiSpyService extends Service implements
 
     @Override
     public void onConnectionSuspended(int i) {
-
+        Log.d("onConnectionSuspended", i +"");
     }
 
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
-
+        Log.d("onConnectionFailed", connectionResult.getErrorMessage());
     }
 
     @Override
