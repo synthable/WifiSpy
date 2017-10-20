@@ -10,6 +10,8 @@ import com.google.android.gms.location.LocationServices;
 import com.synthable.wifispy.provider.DbContract.AccessPoints;
 import com.synthable.wifispy.provider.model.AccessPoint;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
@@ -21,6 +23,7 @@ import android.database.Cursor;
 import android.location.Location;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
@@ -80,20 +83,26 @@ public class WifiSpyService extends Service implements
             mWifiManager.setWifiEnabled(true);
         }
 
-        /*NotificationCompat.Builder mBuilder =
-                new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.mipmap.ic_launcher)
-                        .setContentTitle("WifiSpy is scanning...")
-                        .setContentText("Click to view")
-                        .setOngoing(true);
-
-        Intent i = new Intent(this, MainDrawerActivity.class);
+        /*Intent i = new Intent(this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        mBuilder.setContentIntent(contentIntent);
+        Notification notification = new NotificationCompat.Builder(this, "scan_chan")
+                .setChannelId("scan_chan")
+                .setSound(null)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentTitle("WifiSpy is scanning...")
+                .setContentText("Click to view")
+                .setContentIntent(contentIntent)
+                .setOngoing(true)
+                .build();
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        mNotificationManager.notify(0, mBuilder.build());*/
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel mChannel =
+                    new NotificationChannel("scan_chan", "scanning", NotificationManager.IMPORTANCE_DEFAULT);
+            mNotificationManager.createNotificationChannel(mChannel);
+        }
+        mNotificationManager.notify(0, notification);*/
     }
 
     @Override
