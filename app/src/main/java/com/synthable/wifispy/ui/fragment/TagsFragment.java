@@ -28,7 +28,6 @@ import android.widget.ListView;
 
 import com.synthable.wifispy.FragmentInteraction;
 import com.synthable.wifispy.R;
-import com.synthable.wifispy.provider.DbContract;
 import com.synthable.wifispy.provider.DbContract.Tags;
 import com.synthable.wifispy.provider.model.Tag;
 
@@ -46,6 +45,16 @@ public class TagsFragment extends ListFragment implements
     private TagsAdapter mTagsAdapter;
 
     private HashSet<Long> mSelectedTagIds = new HashSet<>();
+    private HashSet<Long> mSelectedApIds = new HashSet<>();
+
+    public static TagsFragment newInstance(HashSet<Long> ids) {
+        Bundle args = new Bundle();
+        args.putSerializable("sap", ids);
+
+        TagsFragment fragment = new TagsFragment();
+        fragment.setArguments(args);
+        return fragment;
+    }
 
     public TagsFragment() {
     }
@@ -59,6 +68,16 @@ public class TagsFragment extends ListFragment implements
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if(getArguments() != null) {
+            Bundle args = getArguments();
+            mSelectedApIds = (HashSet<Long>) args.getSerializable("sap");
         }
     }
 
@@ -126,7 +145,6 @@ public class TagsFragment extends ListFragment implements
             @Override
             public boolean onActionItemClicked(ActionMode actionMode, MenuItem menuItem) {
                 switch (menuItem.getItemId()) {
-                    default:
                     case R.id.edit:
                         Long tagId = mSelectedTagIds.iterator().next().longValue();
                         EditTagDialog dialog = EditTagDialog.newInstance(tagId);
@@ -156,6 +174,11 @@ public class TagsFragment extends ListFragment implements
                                     Tags.buildTagUri(id), null, null
                             );
                         }
+                        break;
+                    case R.id.done:
+
+                        break;
+                    default:
                         break;
                 }
 
@@ -203,7 +226,7 @@ public class TagsFragment extends ListFragment implements
         };
 
         public TagsAdapter(Context context) {
-            super(context, R.layout.list_tag_item, null, FROM, TO);
+            super(context, R.layout.list_tag_item, null, FROM, TO, 0);
         }
     }
 
@@ -250,7 +273,7 @@ public class TagsFragment extends ListFragment implements
                 getActivity().getContentResolver().insert(Tags.URI, tag.toContentValues());
             }
 
-            dismiss();
+            //dismiss();
         }
     }
 
