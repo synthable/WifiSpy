@@ -2,6 +2,7 @@ package com.synthable.wifispy;
 
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,6 +15,7 @@ import com.synthable.wifispy.ui.fragment.AccessPointsFragment;
 import com.synthable.wifispy.ui.fragment.TagsFragment;
 
 public class MainActivity extends AppCompatActivity implements
+        FragmentManager.OnBackStackChangedListener,
         FragmentInteraction.OnInteractionListener {
 
     private static final int PERMISSION_REQUEST_LOCATION = 1;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements
         } else {
 
         }
-
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new AccessPointsFragment())
                 .commit();
@@ -44,10 +46,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onStop() {
         super.onStop();
-
-        /*if(WifiSpyService.isRunning) {
-            WifiSpyService.stop(this);
-        }*/
     }
 
     @Override
@@ -83,6 +81,19 @@ public class MainActivity extends AppCompatActivity implements
                 }
             }
         }
+    }
+
+    @Override
+    public void onBackStackChanged() {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(
+                getSupportFragmentManager().getBackStackEntryCount() > 0
+        );
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        getSupportFragmentManager().popBackStack();
+        return super.onSupportNavigateUp();
     }
 
     @Override
