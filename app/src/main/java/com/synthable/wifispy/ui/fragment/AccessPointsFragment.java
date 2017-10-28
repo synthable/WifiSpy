@@ -1,15 +1,17 @@
 package com.synthable.wifispy.ui.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
+import android.support.v7.app.AlertDialog;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,14 +22,12 @@ import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.synthable.wifispy.FragmentInteraction;
 import com.synthable.wifispy.R;
 import com.synthable.wifispy.WifiSpyService;
-import com.synthable.wifispy.provider.DbContract;
 import com.synthable.wifispy.provider.DbContract.AccessPoints;
-import com.synthable.wifispy.provider.model.AccessPoint;
+import com.synthable.wifispy.provider.DbContract.Tags;
 
 import java.util.HashSet;
 
@@ -37,12 +37,15 @@ public class AccessPointsFragment extends ListFragment implements
     private FragmentInteraction.OnInteractionListener mListener;
 
     private static final int LOADER_ACCESS_POINTS = 0;
+    private static final int LOADER_TAGS = 1;
 
     private ListView mListView;
     private AccessPointsAdapter mAccessPointsAdapter;
     private FloatingActionButton mFloatingActionButton;
+    private TagsDialogAdapter mTagsAdapter;
 
     private HashSet<Long> mSelectedApIds = new HashSet<>();
+
 
     public AccessPointsFragment() {
     }
@@ -63,8 +66,10 @@ public class AccessPointsFragment extends ListFragment implements
         super.onCreate(savedInstanceState);
 
         mAccessPointsAdapter = new AccessPointsAdapter(getContext());
+        mTagsAdapter = new TagsDialogAdapter(getActivity());
 
         getLoaderManager().initLoader(LOADER_ACCESS_POINTS, null, this);
+        getLoaderManager().initLoader(LOADER_TAGS, null, this);
 
         setHasOptionsMenu(true);
     }
@@ -79,7 +84,6 @@ public class AccessPointsFragment extends ListFragment implements
         super.onViewCreated(view, savedInstanceState);
 
         mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
-        mFloatingActionButton.setImageResource(WifiSpyService.isRunning ? R.mipmap.ic_stop : R.mipmap.ic_play);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -87,8 +91,13 @@ public class AccessPointsFragment extends ListFragment implements
                     mFloatingActionButton.setImageResource(R.mipmap.ic_play);
                     WifiSpyService.stop(getActivity());
                 } else {
-                    mFloatingActionButton.setImageResource(R.mipmap.ic_stop);
-                    WifiSpyService.start(getActivity());
+                    new TagsSelectDialog(getActivity(), mTagsAdapter.getCursor(), new TagsSelectDialogDone() {
+                        @Override
+                        public void done(HashSet<Long> ids) {
+                            mFloatingActionButton.setImageResource(R.mipmap.ic_stop);
+                            WifiSpyService.start(getActivity().getApplicationContext(), ids);
+                        }
+                    }).show();
                 }
             }
         });
@@ -165,6 +174,13 @@ public class AccessPointsFragment extends ListFragment implements
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        mFloatingActionButton.setImageResource(WifiSpyService.isRunning ? R.mipmap.ic_stop : R.mipmap.ic_play);
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.fragment_access_points, menu);
@@ -188,17 +204,104 @@ public class AccessPointsFragment extends ListFragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getContext(), AccessPoints.URI, AccessPoints.PROJECTION, null, null, null);
+        switch(id) {
+            default:
+            case LOADER_ACCESS_POINTS:
+                return new CursorLoader(getContext(), AccessPoints.URI, AccessPoints.PROJECTION, null, null, null);
+            case LOADER_TAGS:
+                return new CursorLoader(getContext(), Tags.URI, Tags.DIALOG_PROJECTION, null, null, null);
+        }
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
-        mAccessPointsAdapter.swapCursor(cursor);
+        switch(loader.getId()) {
+            case LOADER_ACCESS_POINTS:
+                mAccessPointsAdapter.swapCursor(cursor);
+                break;
+            case LOADER_TAGS:
+                mTagsAdapter.swapCursor(cursor);
+                break;
+        }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAccessPointsAdapter.swapCursor(null);
+        switch(loader.getId()) {
+            case LOADER_ACCESS_POINTS:
+                mAccessPointsAdapter.swapCursor(null);
+                break;
+            case LOADER_TAGS:
+                mTagsAdapter.swapCursor(null);
+                break;
+        }
+    }
+
+    private interface TagsSelectDialogDone {
+        void done(HashSet<Long> ids);
+    }
+
+    private class TagsSelectDialog extends AlertDialog.Builder implements
+            DialogInterface.OnMultiChoiceClickListener {
+
+        private HashSet<Long> mSelectedTagIds = new HashSet<>();
+        private TagsSelectDialogDone mListener;
+
+        public TagsSelectDialog(@NonNull Context context, Cursor cursor, TagsSelectDialogDone listener) {
+            super(context);
+
+            mListener = listener;
+
+            setTitle("Select one or more Tags");
+
+            setMultiChoiceItems(cursor, "checked", Tags.Columns.NAME, this);
+
+            setPositiveButton("Done", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    if(!mSelectedTagIds.isEmpty() && mListener != null) {
+                        mListener.done(mSelectedTagIds);
+                    }
+                }
+            });
+
+            setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    mSelectedTagIds.clear();
+                }
+            });
+
+            setOnCancelListener(new DialogInterface.OnCancelListener() {
+                @Override
+                public void onCancel(DialogInterface dialogInterface) {
+                    mSelectedTagIds.clear();
+                }
+            });
+        }
+
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i, boolean checked) {
+            if(checked) {
+                mSelectedTagIds.add(mTagsAdapter.getItemId(i));
+            } else {
+                mSelectedTagIds.remove(mTagsAdapter.getItemId(i));
+            }
+        }
+    }
+
+    public static class TagsDialogAdapter extends SimpleCursorAdapter {
+
+        private static final String[] FROM = new String[] {
+                Tags.Columns.NAME
+        };
+        private static final int[] TO = new int[] {
+                R.id.tag_name
+        };
+
+        public TagsDialogAdapter(Context context) {
+            super(context, R.layout.list_tag_item, null, FROM, TO, 0);
+        }
     }
 
     public static class AccessPointsAdapter extends SimpleCursorAdapter {
@@ -235,4 +338,6 @@ public class AccessPointsFragment extends ListFragment implements
             );
         }
     }
+
+
 }

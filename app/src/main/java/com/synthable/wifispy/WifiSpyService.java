@@ -1,21 +1,12 @@
 package com.synthable.wifispy;
 
-import java.util.List;
-
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
-import com.synthable.wifispy.provider.DbContract.AccessPoints;
-import com.synthable.wifispy.provider.model.AccessPoint;
-
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -27,7 +18,22 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.synthable.wifispy.provider.DbContract.AccessPointTags;
+import com.synthable.wifispy.provider.DbContract.AccessPoints;
+import com.synthable.wifispy.provider.model.AccessPoint;
+import com.synthable.wifispy.provider.model.AccessPointTag;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class WifiSpyService extends Service implements
         GoogleApiClient.ConnectionCallbacks,
@@ -37,13 +43,16 @@ public class WifiSpyService extends Service implements
     private static final int UPDATE_INTERVAL = 1000 * 5;
     private static final int FASTEST_INTERVAL = 1000 * 1;
 
-    public static final String TAG = "WIFISPY_SERVICE";
+    public static final String EXTRA_TAG_IDS = "tag_ids";
+    public static final String CHANNEL = "WIFISPY_SERVICE";
+
     public static boolean isRunning = false;
     public static boolean isScanning = false;
 
     private GoogleApiClient mGoogleApiClient;
     private Location mLastLocation;
     private LocationRequest mLocationRequest;
+    private HashSet<Long> mTagIds;
     private double mLatitude;
     private double mLongitude;
 
@@ -96,6 +105,7 @@ public class WifiSpyService extends Service implements
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .build();
+
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel mChannel =
@@ -103,12 +113,16 @@ public class WifiSpyService extends Service implements
             mNotificationManager.createNotificationChannel(mChannel);
         }
         mNotificationManager.notify(0, notification);*/
+
+        startForeground(1, notification);
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
+
         unregisterReceiver(mWifiReceiver);
+
         isRunning = false;
         isScanning = false;
 
@@ -116,24 +130,22 @@ public class WifiSpyService extends Service implements
             LocationServices.FusedLocationApi
                     .removeLocationUpdates(mGoogleApiClient, this);
         }
-
-//        mNotificationManager.cancelAll();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        mTagIds = (HashSet<Long>) intent.getSerializableExtra(EXTRA_TAG_IDS);
         return super.onStartCommand(intent, flags, startId);
     }
 
-    public static void start(Context c) {
+    public static void start(Context c, HashSet<Long> tagIds) {
         Intent i = new Intent(c, WifiSpyService.class);
-        i.addCategory(TAG);
-        c.startService(i);
+        i.putExtra(EXTRA_TAG_IDS, tagIds);
+        ContextCompat.startForegroundService(c, i);
     }
 
     public static void stop(Context c) {
         Intent i = new Intent(c, WifiSpyService.class);
-        i.addCategory(TAG);
         c.stopService(i);
     }
 
@@ -206,6 +218,13 @@ public class WifiSpyService extends Service implements
                 cursor.close();
 
                 getContentResolver().insert(AccessPoints.URI, ap.toContentValues());
+
+                ArrayList<ContentValues> values = new ArrayList<>();
+                for(Long id : mTagIds) {
+                    AccessPointTag apTag = new AccessPointTag(ap.getBssid(), id);
+                    values.add(apTag.toContentValues());
+                    getContentResolver().insert(AccessPointTags.URI, apTag.toContentValues());
+                }
             }
         }
     }
