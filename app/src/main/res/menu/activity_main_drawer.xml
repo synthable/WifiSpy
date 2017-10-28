@@ -8,16 +8,16 @@
             android:id="@+id/accessp_points"
             android:checked="true"
             android:icon="@mipmap/ic_wifi"
-            android:title="Access Points"/>
+            android:title="@string/access_points"/>
         <item
             android:id="@+id/tags"
             android:checked="true"
             android:icon="@mipmap/ic_tags"
-            android:title="Tags List"/>
+            android:title="@string/tags_list"/>
         <item
             android:id="@+id/map"
             android:icon="@mipmap/ic_places"
-            android:title="View Map"/>
+            android:title="@string/view_map"/>
     </group>
 
     <group
@@ -26,11 +26,11 @@
         <item
             android:id="@+id/settings"
             android:icon="@mipmap/ic_settings"
-            android:title="Settings"/>
+            android:title="@string/settings"/>
         <item
             android:id="@+id/about"
             android:icon="@mipmap/ic_about"
-            android:title="About"/>
+            android:title="@string/about"/>
     </group>
 
 </menu>
