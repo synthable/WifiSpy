@@ -92,12 +92,12 @@ public class WifiSpyService extends Service implements
             mWifiManager.setWifiEnabled(true);
         }
 
-        /*Intent i = new Intent(this, MainActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
         PendingIntent contentIntent = PendingIntent.getActivity(this, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        Notification notification = new NotificationCompat.Builder(this, "scan_chan")
-                .setChannelId("scan_chan")
+        Notification notification = new NotificationCompat.Builder(this, CHANNEL)
+                .setChannelId(CHANNEL)
                 .setSound(null)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentTitle("WifiSpy is scanning...")
@@ -108,11 +108,10 @@ public class WifiSpyService extends Service implements
 
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel mChannel =
-                    new NotificationChannel("scan_chan", "scanning", NotificationManager.IMPORTANCE_DEFAULT);
-            mNotificationManager.createNotificationChannel(mChannel);
+            NotificationChannel channel =
+                    new NotificationChannel(CHANNEL, "Wifi Scanning", NotificationManager.IMPORTANCE_LOW);
+            mNotificationManager.createNotificationChannel(channel);
         }
-        mNotificationManager.notify(0, notification);*/
 
         startForeground(1, notification);
     }
