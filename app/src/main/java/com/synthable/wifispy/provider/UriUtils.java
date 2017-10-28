@@ -12,6 +12,7 @@ public class UriUtils {
 
     public static final int AP_TAGS = 300;
     public static final int AP_TAG = 301;
+    public static final int AP_TAGS_COUNT = 302;
 
     public static final UriMatcher sUriMatcher;
     static {
@@ -24,6 +25,7 @@ public class UriUtils {
         sUriMatcher.addURI(DbContract.AUTHORITY, "aps/#", ACCESS_POINT);
 
         sUriMatcher.addURI(DbContract.AUTHORITY, "ap_tags", AP_TAGS);
+        sUriMatcher.addURI(DbContract.AUTHORITY, "ap_tags/count", AP_TAGS_COUNT);
         sUriMatcher.addURI(DbContract.AUTHORITY, "ap_tags/#", AP_TAG);
     }
 }

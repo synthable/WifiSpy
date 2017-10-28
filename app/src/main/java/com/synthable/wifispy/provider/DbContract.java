@@ -25,6 +25,12 @@ public class DbContract {
                 Columns.NAME
         };
 
+        public static final String[] DIALOG_PROJECTION = {
+                Columns._ID,
+                Columns.NAME,
+                "0 AS checked"
+        };
+
         public static final String TABLE = "tags";
         public static final String SCHEMA = "CREATE TABLE IF NOT EXISTS "
                 + TABLE + "("
@@ -85,6 +91,7 @@ public class DbContract {
 
     public static final class AccessPointTags {
         public static final Uri URI = Uri.parse(CONTENT_URI + "/ap_tags");
+        public static final Uri COUNT_URI = Uri.parse(CONTENT_URI + "/ap_tags/count");
         public static final Uri TAG_URI = Uri.parse(CONTENT_URI + "/ap_tags/#");
 
         public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.wifispy.ap_tags";
@@ -104,11 +111,11 @@ public class DbContract {
         public static final String SCHEMA = "CREATE TABLE IF NOT EXISTS "
                 + TABLE + "("
                 + Columns._ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + Columns.ACCESS_POINT_ID + " INTEGER,"
+                + Columns.ACCESS_POINT_ID + " TEXT,"
                 + Columns.TAG_ID + " INTEGER,"
                 + "UNIQUE(" + Columns.ACCESS_POINT_ID + "," + Columns.TAG_ID + "),"
-                + "FOREIGN KEY(" + Columns.TAG_ID + ") REFERENCES " + Tags.TABLE + "(" + Tags.Columns._ID + "),"
-                + "FOREIGN KEY(" + Columns.ACCESS_POINT_ID + ") REFERENCES " + AccessPoints.TABLE + "(" + AccessPoints.Columns._ID + ")"
+                    + "FOREIGN KEY(" + Columns.TAG_ID + ") REFERENCES " + Tags.TABLE + "(" + Tags.Columns._ID + "),"
+                    + "FOREIGN KEY(" + Columns.ACCESS_POINT_ID + ") REFERENCES " + AccessPoints.TABLE + "(" + AccessPoints.Columns.BSSID + ")"
                 + ");";
 
         public static final class Columns implements BaseColumns {

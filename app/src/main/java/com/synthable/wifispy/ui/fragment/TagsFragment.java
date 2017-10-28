@@ -28,6 +28,7 @@ import android.widget.ListView;
 
 import com.synthable.wifispy.FragmentInteraction;
 import com.synthable.wifispy.R;
+import com.synthable.wifispy.provider.DbContract.AccessPointTags;
 import com.synthable.wifispy.provider.DbContract.Tags;
 import com.synthable.wifispy.provider.model.Tag;
 
@@ -202,7 +203,7 @@ public class TagsFragment extends ListFragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getContext(), Tags.URI, Tags.PROJECTION, null, null, null);
+        return new CursorLoader(getContext(), AccessPointTags.COUNT_URI, Tags.PROJECTION, null, null, null);
     }
 
     @Override
@@ -219,10 +220,10 @@ public class TagsFragment extends ListFragment implements
     public static class TagsAdapter extends SimpleCursorAdapter {
 
         private static final String[] FROM = new String[] {
-                Tags.Columns.NAME
+                Tags.Columns.NAME, Tags.Columns._COUNT
         };
         private static final int[] TO = new int[] {
-                R.id.tag_name
+                R.id.tag_name, R.id.count
         };
 
         public TagsAdapter(Context context) {

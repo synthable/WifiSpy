@@ -38,7 +38,6 @@ public class MainActivity extends AppCompatActivity implements
 
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, new AccessPointsFragment())
-                .addToBackStack(null)
                 .commit();
     }
 
@@ -46,9 +45,9 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStop() {
         super.onStop();
 
-        if(WifiSpyService.isRunning) {
+        /*if(WifiSpyService.isRunning) {
             WifiSpyService.stop(this);
-        }
+        }*/
     }
 
     @Override

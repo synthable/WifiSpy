@@ -103,16 +103,19 @@ public class DbProvider extends ContentProvider {
 
         switch (UriUtils.sUriMatcher.match(uri)) {
             case UriUtils.TAGS:
-                /*Cursor tagsCursor = mDb.rawQuery("SELECT "+
-                        "tags._id AS _id, tags.name AS name, COUNT(access_point_tags._id) AS count "+
-                        "FROM tags, access_point_tags "+
-                        "WHERE access_point_tags.tag_id = tags._id",
-                        null
-                );*/
                 qb.setTables(Tags.TABLE);
                 break;
-                /*tagsCursor.setNotificationUri(getContext().getContentResolver(), uri);
-                return tagsCursor;*/
+            case UriUtils.AP_TAGS_COUNT:
+                String tagsCountSubQuery = "SELECT COUNT(*) FROM access_point_tags WHERE access_point_tags.tag_id = tags._id";
+                Cursor tagsCursor = mDb.rawQuery("SELECT "+
+                        "tags._id AS _id, tags.name AS name, ("+ tagsCountSubQuery +") AS _count "+
+                        "FROM tags "+
+                            "LEFT JOIN access_point_tags ON tags._id = access_point_tags.tag_id "+
+                        "GROUP BY tags._id",
+                        null
+                );
+                tagsCursor.setNotificationUri(getContext().getContentResolver(), uri);
+                return tagsCursor;
             case UriUtils.ACCESS_POINTS:
                 qb.setTables(AccessPoints.TABLE);
                 break;
