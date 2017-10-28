@@ -60,13 +60,13 @@ public class MainActivity extends AppCompatActivity implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case R.id.action_settings:
-                Toast.makeText(this, "Settings", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.settings, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_help:
-                Toast.makeText(this, "Help", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.help, Toast.LENGTH_SHORT).show();
                 break;
             case R.id.action_about:
-                Toast.makeText(this, "About", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, R.string.about, Toast.LENGTH_SHORT).show();
                 break;
         }
         return super.onOptionsItemSelected(item);

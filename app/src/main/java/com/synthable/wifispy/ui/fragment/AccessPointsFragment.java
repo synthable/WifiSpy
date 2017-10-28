@@ -110,7 +110,7 @@ public class AccessPointsFragment extends ListFragment implements
             @Override
             public void onItemCheckedStateChanged(ActionMode actionMode, int p, long i, boolean checked) {
                 int checkedCount = mListView.getCheckedItemCount();
-                actionMode.setSubtitle(checkedCount + " access points selected");
+                actionMode.setSubtitle(checkedCount + getString(R.string.access_points_selected));
 
                 //Buld a list of selected Tags to perform a delete on later
                 Long id = mAccessPointsAdapter.getItemId(p);
@@ -252,11 +252,11 @@ public class AccessPointsFragment extends ListFragment implements
 
             mListener = listener;
 
-            setTitle("Select one or more Tags");
+            setTitle(R.string.dialog_select_tags_title);
 
             setMultiChoiceItems(cursor, "checked", Tags.Columns.NAME, this);
 
-            setPositiveButton("Done", new DialogInterface.OnClickListener() {
+            setPositiveButton(R.string.done, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     if(!mSelectedTagIds.isEmpty() && mListener != null) {
@@ -265,7 +265,7 @@ public class AccessPointsFragment extends ListFragment implements
                 }
             });
 
-            setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     mSelectedTagIds.clear();

@@ -3,6 +3,7 @@ package com.synthable.wifispy.ui.fragment;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -114,7 +115,7 @@ public class TagsFragment extends ListFragment implements
             @Override
             public void onItemCheckedStateChanged(ActionMode actionMode, int p, long i, boolean checked) {
                 int checkedCount = mListView.getCheckedItemCount();
-                actionMode.setSubtitle(checkedCount + " tags selected");
+                actionMode.setSubtitle(checkedCount + getString(R.string.tags_selected));
 
                 // Only show the "edit" option if not more than one item is selected
                 actionMode.getMenu().getItem(0).setVisible(checkedCount == 1);
@@ -234,6 +235,8 @@ public class TagsFragment extends ListFragment implements
     public static class BaseTagDialog extends DialogFragment implements
             DialogInterface.OnClickListener {
 
+        protected static final String TITLE = Resources.getSystem().getString(R.string.edit_tag_name);
+
         protected View mDialogLayout;
         protected EditText mTagInput;
         protected Long mTagId;
@@ -280,8 +283,6 @@ public class TagsFragment extends ListFragment implements
 
     public static class AddTagDialog extends BaseTagDialog {
 
-        protected static final String TITLE = "Edit Tag Name";
-
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
             mDialogBuilder = new AlertDialog.Builder(getActivity())
@@ -292,8 +293,6 @@ public class TagsFragment extends ListFragment implements
     }
 
     public static class EditTagDialog extends BaseTagDialog {
-
-        protected static final String TITLE = "Edit Tag Name";
 
         public static EditTagDialog newInstance(Long id) {
             Bundle args = new Bundle();

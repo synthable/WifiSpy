@@ -100,8 +100,8 @@ public class WifiSpyService extends Service implements
                 .setChannelId(CHANNEL)
                 .setSound(null)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("WifiSpy is scanning...")
-                .setContentText("Click to view")
+                .setContentTitle(getString(R.string.we_are_scanning))
+                .setContentText(getString(R.string.click_to_view))
                 .setContentIntent(contentIntent)
                 .setOngoing(true)
                 .build();
@@ -109,7 +109,7 @@ public class WifiSpyService extends Service implements
         mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel =
-                    new NotificationChannel(CHANNEL, "Wifi Scanning", NotificationManager.IMPORTANCE_LOW);
+                    new NotificationChannel(CHANNEL, getString(R.string.notification_channel_scanning), NotificationManager.IMPORTANCE_LOW);
             mNotificationManager.createNotificationChannel(channel);
         }
 
