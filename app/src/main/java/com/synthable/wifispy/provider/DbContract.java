@@ -107,6 +107,14 @@ public class DbContract {
                 Columns.TAG_ID
         };
 
+        public static final String COUNT_QUERY = new StringBuilder("SELECT COUNT(*)")
+                .append(" FROM "+ AccessPointTags.TABLE)
+                .append(" WHERE ")
+                .append(AccessPointTags.TABLE +"."+ AccessPointTags.Columns.TAG_ID)
+                .append(" = ")
+                .append(Tags.TABLE +"."+ Tags.Columns._ID)
+                .toString();
+
         public static final String TABLE = "access_point_tags";
         public static final String SCHEMA = "CREATE TABLE IF NOT EXISTS "
                 + TABLE + "("

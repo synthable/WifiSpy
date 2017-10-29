@@ -1,9 +1,5 @@
 package com.synthable.wifispy.provider;
 
-import com.synthable.wifispy.provider.DbContract.Tags;
-import com.synthable.wifispy.provider.DbContract.AccessPoints;
-import com.synthable.wifispy.provider.DbContract.AccessPointTags;
-
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -12,6 +8,10 @@ import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
+
+import com.synthable.wifispy.provider.DbContract.AccessPointTags;
+import com.synthable.wifispy.provider.DbContract.AccessPoints;
+import com.synthable.wifispy.provider.DbContract.Tags;
 
 public class DbProvider extends ContentProvider {
     public static final Uri CONTENT_URI = Uri.parse("content://com.synthable.wifispy");
@@ -101,21 +101,21 @@ public class DbProvider extends ContentProvider {
         final SQLiteDatabase mDb = mDbHelper.getReadableDatabase();
         final SQLiteQueryBuilder qb = new SQLiteQueryBuilder();
 
+        String groupBy = null;
+
         switch (UriUtils.sUriMatcher.match(uri)) {
             case UriUtils.TAGS:
                 qb.setTables(Tags.TABLE);
                 break;
             case UriUtils.AP_TAGS_COUNT:
-                String tagsCountSubQuery = "SELECT COUNT(*) FROM access_point_tags WHERE access_point_tags.tag_id = tags._id";
-                Cursor tagsCursor = mDb.rawQuery("SELECT "+
-                        "tags._id AS _id, tags.name AS name, ("+ tagsCountSubQuery +") AS _count "+
-                        "FROM tags "+
-                            "LEFT JOIN access_point_tags ON tags._id = access_point_tags.tag_id "+
-                        "GROUP BY tags._id",
-                        null
-                );
-                tagsCursor.setNotificationUri(getContext().getContentResolver(), uri);
-                return tagsCursor;
+                String tagsCountSubQuery = AccessPointTags.COUNT_QUERY;
+
+                qb.setTables(Tags.TABLE +","+ AccessPointTags.TABLE);
+                projection = new String[] {
+                    "tags._id AS _id", "name", "("+ tagsCountSubQuery +") AS _count"
+                };
+                groupBy = "tags._id";
+                break;
             case UriUtils.ACCESS_POINTS:
                 qb.setTables(AccessPoints.TABLE);
                 break;
@@ -126,7 +126,7 @@ public class DbProvider extends ContentProvider {
                 throw new IllegalArgumentException("Unknown query URI: " + uri);
         }
 
-        Cursor c = qb.query(mDb, projection, selection, selectionArgs, null, null, sortOrder);
+        Cursor c = qb.query(mDb, projection, selection, selectionArgs, groupBy, null, sortOrder);
         c.setNotificationUri(getContext().getContentResolver(), uri);
         return c;
     }

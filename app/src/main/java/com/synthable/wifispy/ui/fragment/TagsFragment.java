@@ -204,7 +204,7 @@ public class TagsFragment extends ListFragment implements
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(getContext(), AccessPointTags.COUNT_URI, Tags.PROJECTION, null, null, null);
+        return new CursorLoader(getContext(), AccessPointTags.COUNT_URI, null, null, null, null);
     }
 
     @Override
@@ -235,7 +235,7 @@ public class TagsFragment extends ListFragment implements
     public static class BaseTagDialog extends DialogFragment implements
             DialogInterface.OnClickListener {
 
-        protected static final String TITLE = Resources.getSystem().getString(R.string.edit_tag_name);
+        protected static String TITLE = null;
 
         protected View mDialogLayout;
         protected EditText mTagInput;
@@ -244,6 +244,8 @@ public class TagsFragment extends ListFragment implements
 
         @Override
         public Dialog onCreateDialog(final Bundle savedInstanceState) {
+            TITLE = getString(R.string.edit_tag_name);
+
             mDialogLayout = getActivity().getLayoutInflater().inflate(R.layout.dialog_new_tag, null);
             mTagInput = (EditText) mDialogLayout.findViewById(R.id.tags_new_input);
 

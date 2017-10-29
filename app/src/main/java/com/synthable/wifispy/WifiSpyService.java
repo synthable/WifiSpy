@@ -87,7 +87,7 @@ public class WifiSpyService extends Service implements
         mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         /** Turn on Wifi if not already **/
-        mWifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+        mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if(!mWifiManager.isWifiEnabled()) {
             mWifiManager.setWifiEnabled(true);
         }
