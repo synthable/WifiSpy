@@ -1,4 +1,4 @@
-package com.synthable.wifispy;
+package com.synthable.signals;
 
 import android.content.pm.PackageManager;
 import androidx.core.app.ActivityCompat;
@@ -11,8 +11,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.synthable.wifispy.ui.fragment.AccessPointsFragment;
-import com.synthable.wifispy.ui.fragment.TagsFragment;
+import com.synthable.signals.ui.fragment.AccessPointsFragment;
+import com.synthable.signals.ui.fragment.TagsFragment;
 
 public class MainActivity extends AppCompatActivity implements
         FragmentManager.OnBackStackChangedListener,

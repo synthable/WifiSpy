@@ -1,11 +1,11 @@
-package com.synthable.wifispy.provider;
+package com.synthable.signals.provider;
 
 import android.net.Uri;
 import android.provider.BaseColumns;
 
 public class DbContract {
 
-    public static final String AUTHORITY = "com.synthable.wifispy";
+    public static final String AUTHORITY = "com.synthable.signals";
 
     public static final Uri CONTENT_URI = Uri.parse("content://" + AUTHORITY);
 
@@ -13,8 +13,8 @@ public class DbContract {
         public static final Uri URI = Uri.parse(CONTENT_URI + "/tags");
         public static final Uri TAG_URI = Uri.parse(CONTENT_URI + "/tags/#");
 
-        public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.wifispy.tags";
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.wifispy.tag";
+        public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.signals.tags";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.signals.tag";
 
         public static final Uri buildTagUri(long id) {
             return Uri.withAppendedPath(TAG_URI, String.valueOf(id));
@@ -47,8 +47,8 @@ public class DbContract {
         public static final Uri URI = Uri.parse(CONTENT_URI + "/aps");
         public static final Uri ACCESSP_POINT_URI = Uri.parse(CONTENT_URI + "/aps/#");
 
-        public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.wifispy.aps";
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.wifispy.ap";
+        public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.signals.aps";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.signals.ap";
 
         public static final Uri buildApUri(long id) {
             return Uri.withAppendedPath(URI, String.valueOf(id));
@@ -94,8 +94,8 @@ public class DbContract {
         public static final Uri COUNT_URI = Uri.parse(CONTENT_URI + "/ap_tags/count");
         public static final Uri TAG_URI = Uri.parse(CONTENT_URI + "/ap_tags/#");
 
-        public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.wifispy.ap_tags";
-        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.wifispy.ap_tag";
+        public static final String CONTENT_DIR_TYPE = "vnd.android.cursor.dir/vnd.signals.ap_tags";
+        public static final String CONTENT_ITEM_TYPE = "vnd.android.cursor.item/vnd.signals.ap_tag";
 
         public static final Uri buildApTagsUri(long id) {
             return Uri.withAppendedPath(URI, String.valueOf(id));

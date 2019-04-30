@@ -1,4 +1,4 @@
-package com.synthable.wifispy;
+package com.synthable.signals;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

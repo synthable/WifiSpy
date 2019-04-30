@@ -1,4 +1,4 @@
-package com.synthable.wifispy.provider;
+package com.synthable.signals.provider;
 
 import android.content.ContentProvider;
 import android.content.ContentUris;
@@ -9,12 +9,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 
-import com.synthable.wifispy.provider.DbContract.AccessPointTags;
-import com.synthable.wifispy.provider.DbContract.AccessPoints;
-import com.synthable.wifispy.provider.DbContract.Tags;
+import com.synthable.signals.provider.DbContract.AccessPointTags;
+import com.synthable.signals.provider.DbContract.AccessPoints;
+import com.synthable.signals.provider.DbContract.Tags;
 
 public class DbProvider extends ContentProvider {
-    public static final Uri CONTENT_URI = Uri.parse("content://com.synthable.wifispy");
+    public static final Uri CONTENT_URI = Uri.parse("content://com.synthable.signals");
 
     private DbHelper mDbHelper;
 

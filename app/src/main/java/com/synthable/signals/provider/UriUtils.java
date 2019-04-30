@@ -1,4 +1,4 @@
-package com.synthable.wifispy.provider;
+package com.synthable.signals.provider;
 
 import android.content.UriMatcher;
 

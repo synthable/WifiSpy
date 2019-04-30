@@ -1,4 +1,4 @@
-package com.synthable.wifispy;
+package com.synthable.signals;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
@@ -13,8 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.synthable.wifispy.ui.fragment.AccessPointsFragment;
-import com.synthable.wifispy.ui.fragment.TagsFragment;
+import com.synthable.signals.ui.fragment.AccessPointsFragment;
+import com.synthable.signals.ui.fragment.TagsFragment;
 
 public class MainDrawerActivity extends AppCompatActivity implements
         NavigationView.OnNavigationItemSelectedListener,

@@ -1,4 +1,4 @@
-package com.synthable.wifispy.ui.fragment;
+package com.synthable.signals.ui.fragment;
 
 import android.app.Dialog;
 import android.content.Context;
@@ -26,11 +26,11 @@ import android.widget.AbsListView;
 import android.widget.EditText;
 import android.widget.ListView;
 
-import com.synthable.wifispy.FragmentInteraction;
-import com.synthable.wifispy.R;
-import com.synthable.wifispy.provider.DbContract.AccessPointTags;
-import com.synthable.wifispy.provider.DbContract.Tags;
-import com.synthable.wifispy.provider.model.Tag;
+import com.synthable.signals.FragmentInteraction;
+import com.synthable.signals.R;
+import com.synthable.signals.provider.DbContract.AccessPointTags;
+import com.synthable.signals.provider.DbContract.Tags;
+import com.synthable.signals.provider.model.Tag;
 
 import java.util.HashSet;
 

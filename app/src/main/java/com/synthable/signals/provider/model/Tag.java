@@ -1,6 +1,6 @@
-package com.synthable.wifispy.provider.model;
+package com.synthable.signals.provider.model;
 
-import com.synthable.wifispy.provider.DbContract.Tags;
+import com.synthable.signals.provider.DbContract.Tags;
 
 import android.content.ContentValues;
 

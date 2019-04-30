@@ -1,4 +1,4 @@
-package com.synthable.wifispy;
+package com.synthable.signals;
 
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -26,10 +26,10 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.synthable.wifispy.provider.DbContract.AccessPointTags;
-import com.synthable.wifispy.provider.DbContract.AccessPoints;
-import com.synthable.wifispy.provider.model.AccessPoint;
-import com.synthable.wifispy.provider.model.AccessPointTag;
+import com.synthable.signals.provider.DbContract.AccessPointTags;
+import com.synthable.signals.provider.DbContract.AccessPoints;
+import com.synthable.signals.provider.model.AccessPoint;
+import com.synthable.signals.provider.model.AccessPointTag;
 
 import java.util.ArrayList;
 import java.util.HashSet;

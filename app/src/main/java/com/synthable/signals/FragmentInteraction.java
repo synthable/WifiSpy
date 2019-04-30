@@ -1,4 +1,4 @@
-package com.synthable.wifispy;
+package com.synthable.signals;
 
 public class FragmentInteraction {
 

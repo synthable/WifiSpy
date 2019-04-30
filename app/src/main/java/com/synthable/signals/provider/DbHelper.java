@@ -1,12 +1,12 @@
-package com.synthable.wifispy.provider;
+package com.synthable.signals.provider;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.synthable.wifispy.provider.DbContract.Tags;
-import com.synthable.wifispy.provider.DbContract.AccessPoints;
-import com.synthable.wifispy.provider.DbContract.AccessPointTags;
+import com.synthable.signals.provider.DbContract.Tags;
+import com.synthable.signals.provider.DbContract.AccessPoints;
+import com.synthable.signals.provider.DbContract.AccessPointTags;
 
 public class DbHelper extends SQLiteOpenHelper {
 

@@ -1,6 +1,6 @@
-package com.synthable.wifispy.provider.model;
+package com.synthable.signals.provider.model;
 
-import com.synthable.wifispy.provider.DbContract.AccessPoints;
+import com.synthable.signals.provider.DbContract.AccessPoints;
 
 import android.content.ContentValues;
 import android.database.Cursor;

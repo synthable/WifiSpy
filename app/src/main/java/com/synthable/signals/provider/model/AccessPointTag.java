@@ -1,8 +1,8 @@
-package com.synthable.wifispy.provider.model;
+package com.synthable.signals.provider.model;
 
 import android.content.ContentValues;
 
-import com.synthable.wifispy.provider.DbContract.AccessPointTags;
+import com.synthable.signals.provider.DbContract.AccessPointTags;
 
 public class AccessPointTag {
 
